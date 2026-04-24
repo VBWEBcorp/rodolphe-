@@ -10,11 +10,11 @@ import { useContent } from '@/hooks/use-content'
 const ease = [0.22, 1, 0.36, 1] as const
 
 const defaults = {
-  eyebrow: 'Notre histoire',
-  title: 'Une approche humaine, des résultats concrets',
-  paragraph1: 'Depuis nos débuts, nous croyons qu\'un bon site commence par une bonne écoute. Nous prenons le temps de comprendre votre métier, vos clients et vos objectifs avant de concevoir quoi que ce soit.',
-  paragraph2: 'Le résultat : des projets qui vous ressemblent, qui parlent à votre audience, et qui travaillent pour vous 24h/24.',
-  image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80',
+  eyebrow: 'Qui sommes-nous',
+  title: 'Un déménagement sans stress',
+  paragraph1: "EN PAYS WÊ est une entreprise bisontine spécialisée dans le déménagement et le transport. Nous accompagnons particuliers et professionnels avec sérieux, efficacité et soin. Chaque projet est préparé avec attention pour garantir la sécurité de vos biens.",
+  paragraph2: "Notre équipe expérimentée intervient à Besançon, dans tout le Doubs et partout en Franche-Comté & Grand Est. Notre objectif : rendre votre déménagement simple, organisé et serein, du premier échange jusqu'à la dernière caisse installée.",
+  image: 'https://i.ibb.co/Zp1dLCHs/IMG-1931.jpg',
 }
 
 export function StorySection() {
@@ -207,10 +207,10 @@ export function StorySection() {
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="text-[11px] font-semibold text-white">
-                    Une équipe à votre écoute
+                    Une équipe de confiance
                   </p>
                   <p className="text-[10px] text-white/70">
-                    Disponible pour échanger
+                    Intervention partout en Grand Est
                   </p>
                 </div>
               </motion.div>

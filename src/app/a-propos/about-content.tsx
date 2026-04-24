@@ -15,20 +15,21 @@ const defaultIcons = [Heart, Lightbulb, Users]
 const defaults = {
   hero: {
     eyebrow: 'À propos',
-    title: 'Une équipe engagée à vos côtés',
-    description: 'Nous croyons que chaque entreprise mérite une présence en ligne à la hauteur de ses ambitions. Depuis notre création, nous accompagnons artisans, PME et indépendants avec des solutions simples, efficaces et soignées.',
-    image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1920&q=80',
+    title: 'Le déménagement avec le sourire',
+    description:
+      "EN PAYS WÊ est une entreprise bisontine spécialisée dans le déménagement et le transport. Nous intervenons à Besançon, dans tout le Doubs et partout en Franche-Comté & Grand Est, auprès des particuliers comme des professionnels.",
+    image: 'https://i.ibb.co/FLYSvbKS/IMG-1922.jpg',
   },
   values: [
-    { title: 'Proximité', description: 'Un interlocuteur unique, disponible, qui connaît votre projet sur le bout des doigts.' },
-    { title: 'Clarté', description: 'Pas de jargon inutile. Des explications simples, des livrables concrets.' },
-    { title: 'Sur mesure', description: "Chaque projet est différent. Nous adaptons nos solutions à votre réalité, pas l'inverse." },
+    { title: 'Proximité', description: 'Un interlocuteur dédié, à votre écoute, qui suit votre dossier du devis à la dernière caisse livrée.' },
+    { title: 'Soin & sécurité', description: 'Matériel professionnel, emballage adapté, manutention soignée : vos biens voyagent en toute sécurité.' },
+    { title: 'Ponctualité', description: 'Horaires tenus, délais respectés. Votre temps est précieux, on le sait et on le respecte.' },
   ],
   gallery: [
-    'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=600&q=80',
-    'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=600&q=80',
-    'https://images.unsplash.com/photo-1553877522-43269d4ea984?auto=format&fit=crop&w=600&q=80',
-    'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=600&q=80',
+    'https://i.ibb.co/FLYSvbKS/IMG-1922.jpg',
+    'https://i.ibb.co/fVbwGqwn/IMG-1920.jpg',
+    'https://i.ibb.co/Zp1dLCHs/IMG-1931.jpg',
+    'https://i.ibb.co/hxnSQh8R/IMG-1932.jpg',
   ],
 }
 

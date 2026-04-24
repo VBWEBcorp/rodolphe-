@@ -3,10 +3,11 @@ import type { Metadata } from 'next'
 import { CtaSection } from '@/components/sections/cta-section'
 import { GalleryCarousel } from '@/components/sections/gallery-carousel'
 import { HeroSection } from '@/components/sections/hero-section'
+import { ImageMarquee } from '@/components/sections/image-marquee'
+import { ProcessSection } from '@/components/sections/process-section'
 import { ServicesPreview } from '@/components/sections/services-preview'
-import { StorySection } from '@/components/sections/story-section'
 import { TestimonialsSection } from '@/components/sections/testimonials-section'
-import { ValuesMarquee } from '@/components/sections/values-marquee'
+import { WhyUsSection } from '@/components/sections/why-us-section'
 import {
   localBusinessJsonLd,
   organizationJsonLd,
@@ -38,11 +39,12 @@ export default function HomePage() {
       />
       <HeroSection />
       <ServicesPreview />
-      <StorySection />
+      <ImageMarquee />
+      <WhyUsSection />
+      <ProcessSection />
       <TestimonialsSection />
       <GalleryCarousel />
       <CtaSection />
-      <ValuesMarquee />
     </>
   )
 }

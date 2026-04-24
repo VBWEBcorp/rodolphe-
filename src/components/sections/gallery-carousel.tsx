@@ -8,17 +8,18 @@ import { Button } from '@/components/ui/button'
 import { useContent } from '@/hooks/use-content'
 
 const defaultImages = [
-  'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=720&q=80',
-  'https://images.unsplash.com/photo-1553877522-43269d4ea984?auto=format&fit=crop&w=720&q=80',
-  'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=720&q=80',
-  'https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=720&q=80',
-  'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=720&q=80',
-  'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=720&q=80',
+  'https://i.ibb.co/FLYSvbKS/IMG-1922.jpg',
+  'https://i.ibb.co/fVbwGqwn/IMG-1920.jpg',
+  'https://i.ibb.co/Zp1dLCHs/IMG-1931.jpg',
+  'https://i.ibb.co/hxnSQh8R/IMG-1932.jpg',
+  'https://i.ibb.co/BVCwHC4B/D7-E6-C8-D2-A508-4606-9-ABB-D15-ACD22711-E.png',
+  'https://i.ibb.co/h1dSX4Mt/F9-B8-D539-68-D0-4-CBC-A50-C-F0-CBF02-CDA43.jpg',
+  'https://i.ibb.co/jvvZ2m5y/IMG-1927.jpg',
 ]
 
 const defaults = {
   eyebrow: 'Galerie',
-  title: 'En coulisses',
+  title: 'Nos équipes sur le terrain',
   images: defaultImages,
 }
 

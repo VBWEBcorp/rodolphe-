@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { ArrowRight, Globe, Palette, Search, ShieldCheck } from 'lucide-react'
+import { ArrowRight, Home, Package, Truck, Briefcase } from 'lucide-react'
 import Link from 'next/link'
 
 import { SectionTitle } from '@/components/ui/section-title'
@@ -9,15 +9,14 @@ import { Button } from '@/components/ui/button'
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { useContent } from '@/hooks/use-content'
 
-const iconMap: Record<string, any> = { Globe, Search, Palette, ShieldCheck }
 const defaultServices = [
-  { title: 'Création de site web', desc: 'Sites vitrines modernes, responsive et optimisés pour convertir vos visiteurs en clients.' },
-  { title: 'Référencement SEO', desc: 'Stratégie de contenu et optimisation technique pour apparaître en première page Google.' },
-  { title: 'Identité visuelle', desc: 'Logo, charte graphique et supports cohérents qui reflètent votre image de marque.' },
-  { title: 'Maintenance & support', desc: 'Mises à jour, sécurité et accompagnement continu pour garder votre site performant.' },
+  { title: 'Déménagement particuliers', desc: 'Appartements, maisons, studios : une prise en charge complète, du démontage au remontage, avec soin et rapidité.' },
+  { title: 'Transfert de bureaux', desc: "Mobilier, matériel informatique, archives : nous organisons le déménagement de vos locaux professionnels sans interrompre votre activité." },
+  { title: 'Transport & livraison', desc: "Livraison de meubles, d'électroménager et transport de marchandises sur courte ou longue distance." },
+  { title: 'Vidage de caves & garages', desc: 'Débarras complet de caves, garages, appartements et maisons avec mise en déchèterie des encombrants.' },
 ]
 
-const defaultIcons = [Globe, Search, Palette, ShieldCheck]
+const defaultIcons = [Home, Briefcase, Truck, Package]
 
 const ease = [0.22, 1, 0.36, 1] as const
 
@@ -34,12 +33,12 @@ export function ServicesPreview() {
       <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
         <SectionTitle
           eyebrow="Nos services"
-          title="Des solutions adaptées à votre activité"
-          description="Quel que soit votre secteur, nous vous aidons à développer votre présence et à atteindre vos objectifs."
+          title="Une solution pour chaque déménagement"
+          description="Du simple transport d'objets au déménagement complet, nous adaptons nos prestations à votre besoin, particuliers comme professionnels."
         />
         <div className="mt-14 grid gap-5 sm:grid-cols-2">
           {services.map((s: any, i: number) => {
-            const Icon = defaultIcons[i] ?? Globe
+            const Icon = defaultIcons[i] ?? Truck
             return (
               <motion.div
                 key={s.title || i}

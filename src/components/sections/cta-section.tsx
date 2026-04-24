@@ -10,28 +10,28 @@ import { useContent } from '@/hooks/use-content'
 const ease = [0.22, 1, 0.36, 1] as const
 
 const defaults = {
-  eyebrow: 'Prêt à démarrer ?',
-  title: 'Parlons de votre projet',
-  description: 'Un échange simple et sans engagement pour comprendre vos besoins et vous proposer la meilleure approche.',
-  button: 'Demander un devis gratuit',
+  eyebrow: 'Prêt à déménager ?',
+  title: 'Votre devis gratuit en 24h',
+  description: 'Décrivez-nous votre projet en quelques mots : volume, adresses, date souhaitée. Nous vous rappelons rapidement avec un devis clair et sans engagement.',
+  button: 'Demander mon devis',
 }
 
 const col1Images = [
-  'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=500&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1553877522-43269d4ea984?w=400&h=500&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1551434678-e076c223a692?w=400&h=500&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1531973576160-7125cd663d86?w=400&h=500&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=500&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400&h=500&fit=crop&q=80',
+  'https://i.ibb.co/FLYSvbKS/IMG-1922.jpg',
+  'https://i.ibb.co/fVbwGqwn/IMG-1920.jpg',
+  'https://i.ibb.co/Zp1dLCHs/IMG-1931.jpg',
+  'https://i.ibb.co/hxnSQh8R/IMG-1932.jpg',
+  'https://i.ibb.co/h1dSX4Mt/F9-B8-D539-68-D0-4-CBC-A50-C-F0-CBF02-CDA43.jpg',
+  'https://i.ibb.co/jvvZ2m5y/IMG-1927.jpg',
 ]
 
 const col2Images = [
-  'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=400&h=500&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=400&h=500&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=400&h=500&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1573164713988-8665fc963095?w=400&h=500&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=500&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=400&h=500&fit=crop&q=80',
+  'https://i.ibb.co/hxnSQh8R/IMG-1932.jpg',
+  'https://i.ibb.co/jvvZ2m5y/IMG-1927.jpg',
+  'https://i.ibb.co/Zp1dLCHs/IMG-1931.jpg',
+  'https://i.ibb.co/FLYSvbKS/IMG-1922.jpg',
+  'https://i.ibb.co/h1dSX4Mt/F9-B8-D539-68-D0-4-CBC-A50-C-F0-CBF02-CDA43.jpg',
+  'https://i.ibb.co/fVbwGqwn/IMG-1920.jpg',
 ]
 
 function ScrollColumn({ images, direction, speed }: { images: string[]; direction: 'up' | 'down'; speed: number }) {
@@ -86,37 +86,45 @@ export function CtaSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.55, ease }}
-          className="relative overflow-hidden rounded-[2rem] border border-border/80 bg-white dark:bg-zinc-900 shadow-[var(--shadow-lg)]"
+          className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-gradient-to-br from-[oklch(0.20_0.06_260)] via-[oklch(0.17_0.05_260)] to-[oklch(0.22_0.07_260)] shadow-[var(--shadow-lg)]"
         >
+          {/* Ambient glow */}
+          <div aria-hidden className="pointer-events-none absolute -top-40 -left-20 size-[420px] rounded-full bg-[oklch(0.68_0.2_42/0.2)] blur-[120px]" />
+          <div aria-hidden className="pointer-events-none absolute -bottom-40 right-0 size-[420px] rounded-full bg-[oklch(0.42_0.1_260/0.3)] blur-[120px]" />
 
           <div className="relative flex items-stretch min-h-[420px] sm:min-h-[460px]">
             {/* Left - Text content */}
             <div className="relative z-10 flex-1 flex flex-col justify-center p-10 sm:p-14 space-y-6">
-              <p className="font-display text-xs font-semibold tracking-[0.22em] text-primary uppercase">
+              <p className="font-display text-xs font-semibold tracking-[0.22em] text-[oklch(0.82_0.16_42)] uppercase">
                 {cta.eyebrow}
               </p>
-              <h2 className="max-w-xl font-display text-balance text-3xl tracking-tight text-foreground sm:text-4xl">
+              <h2 className="max-w-xl font-display text-balance text-3xl tracking-tight text-white sm:text-4xl lg:text-[42px]">
                 {cta.title}
               </h2>
-              <p className="max-w-lg text-base leading-relaxed text-muted-foreground sm:text-lg">
+              <p className="max-w-lg text-base leading-relaxed text-white/70 sm:text-lg">
                 {cta.description}
               </p>
-              <Button size="lg" className="group" asChild>
-                <Link href="/contact">
-                  {cta.button}
-                  <ArrowRight className="transition-transform group-hover:translate-x-0.5" />
-                </Link>
-              </Button>
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <Button size="lg" className="group bg-[oklch(0.68_0.2_42)] text-white hover:bg-[oklch(0.62_0.2_42)]" asChild>
+                  <Link href="/contact">
+                    {cta.button}
+                    <ArrowRight className="transition-transform group-hover:translate-x-0.5" />
+                  </Link>
+                </Button>
+                <Button size="lg" variant="outline" className="border-white/20 bg-white/5 text-white hover:bg-white/15 hover:text-white" asChild>
+                  <a href="tel:0610602159">06 10 60 21 59</a>
+                </Button>
+              </div>
             </div>
 
             {/* Right - Scrolling images, clipped to card */}
             <div className="hidden md:block relative w-[300px] lg:w-[340px] shrink-0 overflow-hidden">
               {/* Fade top */}
-              <div className="pointer-events-none absolute top-0 left-0 right-0 h-28 bg-gradient-to-b from-white dark:from-zinc-900 to-transparent z-20" />
+              <div className="pointer-events-none absolute top-0 left-0 right-0 h-28 bg-gradient-to-b from-[oklch(0.17_0.05_260)] to-transparent z-20" />
               {/* Fade bottom */}
-              <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-white dark:from-zinc-900 to-transparent z-20" />
+              <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-[oklch(0.22_0.07_260)] to-transparent z-20" />
               {/* Fade left — smooth blend into text area */}
-              <div className="pointer-events-none absolute top-0 bottom-0 left-0 w-20 bg-gradient-to-r from-white dark:from-zinc-900 to-transparent z-20" />
+              <div className="pointer-events-none absolute top-0 bottom-0 left-0 w-20 bg-gradient-to-r from-[oklch(0.17_0.05_260)] to-transparent z-20" />
 
               <div className="absolute inset-0 overflow-hidden">
                 <div className="flex gap-3 -rotate-6 translate-x-[10%]" style={{ height: '140%', marginTop: '-20%' }}>

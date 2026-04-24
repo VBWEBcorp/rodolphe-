@@ -6,22 +6,22 @@ import { SectionTitle } from '@/components/ui/section-title'
 import { useContent } from '@/hooks/use-content'
 
 const defaultTestimonials = [
-  { name: 'Marie D.', company: 'Boulangerie Le Fournil', text: "Depuis le nouveau site, je reçois 3 fois plus d'appels. Les clients nous trouvent enfin sur Google.", stars: 5 },
-  { name: 'Thomas L.', company: 'Cabinet Conseil TLR', text: 'Un travail soigné, un site clair et professionnel. Mes prospects comprennent immédiatement ce que je propose.', stars: 5 },
-  { name: 'Camille B.', company: 'Atelier Camille', text: "Le site reflète parfaitement l'univers de ma marque. J'ai gagné en crédibilité auprès de mes clients.", stars: 5 },
-  { name: 'Laurent M.', company: 'LM Rénovation', text: 'En trois mois, mon chiffre a augmenté de 40 %. Le site et le SEO font vraiment la différence.', stars: 5 },
-  { name: 'Nadia K.', company: 'Agence NovaTour', text: "Un accompagnement au top, des délais respectés et un résultat qui dépasse mes attentes.", stars: 5 },
-  { name: 'Sophie R.', company: 'Studio Pilates Zen', text: "L'équipe a su capter l'ambiance de mon studio. Les réservations ont décollé.", stars: 5 },
-  { name: 'Pierre V.', company: 'Transports Vallée', text: "Un investissement rentabilisé en quelques semaines. Des contacts qualifiés chaque jour.", stars: 5 },
-  { name: 'Julie A.', company: "Les Jardins d'Alice", text: "Ils ont transformé notre présence en ligne. Le site est magnifique et nos ventes ont triplé.", stars: 5 },
-  { name: 'Franck G.', company: 'Studio FG', text: "Design épuré, navigation fluide, exactement ce que je voulais pour présenter mes projets.", stars: 4 },
-  { name: 'Émilie T.', company: 'Clinique Vétérinaire du Parc', text: "Nos clients trouvent toutes les infos facilement. La prise de rendez-vous a changé notre quotidien.", stars: 5 },
+  { name: 'Marie D.', company: 'Déménagement · Besançon', text: "Équipe super sérieuse, ponctuelle et efficace. Tout est arrivé intact, on n'a rien eu à gérer. Je recommande vivement !", stars: 5 },
+  { name: 'Thomas L.', company: 'Transfert bureaux · Dijon', text: 'Déménagement de nos locaux fait en un week-end, sans aucune perte de temps le lundi matin. Professionnels et rapides.', stars: 5 },
+  { name: 'Camille B.', company: 'Particulier · Pontarlier', text: "Déménagement Besançon → Pontarlier géré de A à Z. Meubles démontés, remontés, tout emballé avec soin. Parfait.", stars: 5 },
+  { name: 'Laurent M.', company: 'Débarras maison · Dôle', text: 'Ils ont vidé la maison de mes parents en une journée, tri et déchèterie inclus. Gain de temps énorme, prix honnête.', stars: 5 },
+  { name: 'Nadia K.', company: 'Déménagement · Mulhouse', text: "Un accompagnement au top, des délais tenus et une équipe vraiment sympathique. Parfait sur toute la ligne.", stars: 5 },
+  { name: 'Sophie R.', company: 'Livraison meubles · Strasbourg', text: "Livraison rapide, soignée et au créneau annoncé. Les livreurs ont même monté les meubles à l'étage. Merci !", stars: 5 },
+  { name: 'Pierre V.', company: 'Particulier · Montbéliard', text: "Devis clair, prix respecté, déménagement fluide. Rien à redire, je les recommande à mes proches.", stars: 5 },
+  { name: 'Julie A.', company: 'Déménagement · Belfort', text: "Ils ont géré un 4 pièces avec deux étages sans ascenseur sans broncher. Impressionnée par leur organisation.", stars: 5 },
+  { name: 'Franck G.', company: 'Transport · Vesoul', text: "Transport d'une pièce fragile sur longue distance. Zéro casse, emballage parfait. Top service.", stars: 5 },
+  { name: 'Émilie T.', company: 'Particulier · Lons-le-Saunier', text: "Super expérience, équipe souriante et très pro. Le stress du déménagement a complètement disparu.", stars: 5 },
 ]
 
 const defaults = {
   eyebrow: 'Témoignages',
-  title: 'Ils nous font confiance',
-  description: 'Des entreprises de tous horizons qui ont gagné en visibilité et en crédibilité.',
+  title: 'Ils nous ont confié leur déménagement',
+  description: 'Particuliers et professionnels partout en Franche-Comté et dans le Grand Est : la confiance se mesure aux retours de nos clients.',
   testimonials: defaultTestimonials,
 }
 
