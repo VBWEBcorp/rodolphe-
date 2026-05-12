@@ -1,15 +1,15 @@
 export const siteConfig = {
   name: 'EN PAYS WÊ',
-  url: 'https://www.demenageurs-enpayswe.fr',
+  url: 'https://demenageurs-en-pays-we.fr',
   locale: 'fr_FR',
   description:
     'Déménagement et transport à Besançon, dans le Doubs et partout en Franche-Comté & Grand Est. Particuliers et professionnels : des prestations sérieuses, rapides et soignées.',
-  ogImage: 'https://www.demenageurs-enpayswe.fr/og.png',
+  ogImage: 'https://demenageurs-en-pays-we.fr/og.png',
   twitterHandle: '@enpayswe',
   themeColor: '#ea580c',
   phone: '06 10 60 21 59',
   phoneFixe: '03 81 63 94 10',
-  email: 'contact@demenageurs-enpayswe.fr',
+  email: 'contact@demenageurs-en-pays-we.fr',
   siret: '10133809300012',
   address: {
     street: '25 rue Hector Berlioz',

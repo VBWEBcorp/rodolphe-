@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useContent } from '@/hooks/use-content'
+import { submitToFormspree } from '@/lib/formspree'
 import { siteConfig } from '@/lib/seo'
 
 const ease = [0.22, 1, 0.36, 1] as const
@@ -16,7 +17,7 @@ const INTERVAL = 5500
 
 const defaults = {
   eyebrow: 'Déménageurs en Franche-Comté & Grand Est',
-  title: 'Votre déménagement, simple, rapide et soigné',
+  title: 'Votre déménagement rapide et soigné',
   description:
     'EN PAYS WÊ accompagne particuliers et professionnels à Besançon, dans le Doubs et partout en Franche-Comté & Grand Est. Un service fiable, rapide et sécurisé, du premier carton au dernier meuble installé.',
   button1: 'Demander un devis gratuit',
@@ -39,6 +40,8 @@ const bullets = [
 
 function QuickQuoteCard() {
   const [sent, setSent] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   return (
     <div className="relative">
@@ -89,9 +92,25 @@ function QuickQuoteCard() {
           ) : (
             <form
               className="mt-5 space-y-3"
-              onSubmit={(e) => {
+              onSubmit={async (e) => {
                 e.preventDefault()
-                setSent(true)
+                if (submitting) return
+                const formData = new FormData(e.currentTarget)
+                formData.set('_subject', 'Demande de devis rapide — Site web')
+                setSubmitting(true)
+                setError(null)
+                try {
+                  await submitToFormspree(formData)
+                  setSent(true)
+                } catch (err) {
+                  setError(
+                    err instanceof Error
+                      ? err.message
+                      : 'Une erreur est survenue. Veuillez réessayer.'
+                  )
+                } finally {
+                  setSubmitting(false)
+                }
               }}
             >
               <div className="space-y-1.5">
@@ -100,7 +119,7 @@ function QuickQuoteCard() {
                 </Label>
                 <Input
                   id="hero-name"
-                  name="name"
+                  name="Nom complet"
                   required
                   placeholder="Jean Dupont"
                   className="h-10 rounded-xl border-white/15 bg-white/5 text-white placeholder:text-white/35 focus-visible:border-[oklch(0.72_0.18_42)] focus-visible:ring-[oklch(0.72_0.18_42/0.4)]"
@@ -114,7 +133,7 @@ function QuickQuoteCard() {
                   </Label>
                   <Input
                     id="hero-phone"
-                    name="phone"
+                    name="Téléphone"
                     type="tel"
                     required
                     placeholder="06 12 34 56 78"
@@ -128,7 +147,7 @@ function QuickQuoteCard() {
                   </Label>
                   <Input
                     id="hero-date"
-                    name="date"
+                    name="Date souhaitée"
                     type="date"
                     className="h-10 rounded-xl border-white/15 bg-white/5 text-white placeholder:text-white/35 focus-visible:border-[oklch(0.72_0.18_42)] focus-visible:ring-[oklch(0.72_0.18_42/0.4)] [color-scheme:dark]"
                   />
@@ -141,38 +160,47 @@ function QuickQuoteCard() {
                 </Label>
                 <select
                   id="hero-type"
-                  name="type"
+                  name="Type de prestation"
                   defaultValue=""
                   className="h-10 w-full rounded-xl border border-white/15 bg-white/5 px-3 text-sm text-white transition-colors focus-visible:border-[oklch(0.72_0.18_42)] focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-[oklch(0.72_0.18_42/0.4)]"
                 >
                   <option value="" disabled className="bg-[oklch(0.17_0.05_260)]">
                     Sélectionnez…
                   </option>
-                  <option value="appartement" className="bg-[oklch(0.17_0.05_260)]">
+                  <option value="Déménagement appartement" className="bg-[oklch(0.17_0.05_260)]">
                     Déménagement appartement
                   </option>
-                  <option value="maison" className="bg-[oklch(0.17_0.05_260)]">
+                  <option value="Déménagement maison" className="bg-[oklch(0.17_0.05_260)]">
                     Déménagement maison
                   </option>
-                  <option value="bureaux" className="bg-[oklch(0.17_0.05_260)]">
+                  <option value="Transfert de bureaux" className="bg-[oklch(0.17_0.05_260)]">
                     Transfert de bureaux
                   </option>
-                  <option value="transport" className="bg-[oklch(0.17_0.05_260)]">
+                  <option value="Transport / livraison" className="bg-[oklch(0.17_0.05_260)]">
                     Transport / livraison
                   </option>
-                  <option value="debarras" className="bg-[oklch(0.17_0.05_260)]">
+                  <option value="Débarras / vidage" className="bg-[oklch(0.17_0.05_260)]">
                     Débarras / vidage
                   </option>
                 </select>
               </div>
 
+              {error ? (
+                <p className="rounded-lg bg-red-500/15 px-3 py-2 text-center text-[11px] text-red-200">
+                  {error}
+                </p>
+              ) : null}
+
               <Button
                 type="submit"
                 size="lg"
+                disabled={submitting}
                 className="group w-full bg-[oklch(0.68_0.2_42)] text-white shadow-[0_10px_30px_-10px_oklch(0.68_0.2_42/0.8)] hover:bg-[oklch(0.62_0.2_42)]"
               >
-                Recevoir mon devis
-                <ArrowRight className="transition-transform group-hover:translate-x-0.5" />
+                {submitting ? 'Envoi en cours…' : 'Recevoir mon devis'}
+                {!submitting ? (
+                  <ArrowRight className="transition-transform group-hover:translate-x-0.5" />
+                ) : null}
               </Button>
 
               <p className="pt-1 text-center text-[11px] text-white/45">
@@ -206,8 +234,8 @@ export function HeroSection() {
   }, [images.length])
 
   const titleWords = hero.title.split(' ')
-  const accentWords = titleWords.slice(-2).join(' ')
-  const leading = titleWords.slice(0, -2).join(' ')
+  const accentWords = titleWords.slice(-3).join(' ')
+  const leading = titleWords.slice(0, -3).join(' ')
 
   return (
     <section className="relative isolate overflow-hidden bg-[oklch(0.17_0.05_260)]">
@@ -256,7 +284,7 @@ export function HeroSection() {
 
           <h1 className="mt-6 font-display text-4xl leading-[1.02] tracking-[-0.035em] text-white sm:text-5xl lg:text-[60px]">
             {leading}{' '}
-            <span className="relative inline-block">
+            <span className="relative inline-block whitespace-nowrap">
               <span className="bg-gradient-to-r from-[oklch(0.78_0.16_42)] via-[oklch(0.72_0.2_42)] to-[oklch(0.68_0.22_28)] bg-clip-text text-transparent">
                 {accentWords}
               </span>

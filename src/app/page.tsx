@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 
 import { CtaSection } from '@/components/sections/cta-section'
+import { FormulasSection } from '@/components/sections/formulas-section'
 import { GalleryCarousel } from '@/components/sections/gallery-carousel'
 import { HeroSection } from '@/components/sections/hero-section'
 import { ImageMarquee } from '@/components/sections/image-marquee'
@@ -39,6 +40,7 @@ export default function HomePage() {
       />
       <HeroSection />
       <ServicesPreview />
+      <FormulasSection />
       <ImageMarquee />
       <WhyUsSection />
       <ProcessSection />

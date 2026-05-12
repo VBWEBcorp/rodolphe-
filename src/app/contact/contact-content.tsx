@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent } from '@/components/ui/card'
 import { useContent } from '@/hooks/use-content'
+import { submitToFormspree } from '@/lib/formspree'
 import { siteConfig } from '@/lib/seo'
 
 const ease = [0.22, 1, 0.36, 1] as const
@@ -33,6 +34,8 @@ const defaults = {
 
 function ContactForm() {
   const [sent, setSent] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   return (
     <div className="relative">
@@ -87,9 +90,28 @@ function ContactForm() {
           ) : (
             <form
               className="mt-6 space-y-4"
-              onSubmit={(e) => {
+              onSubmit={async (e) => {
                 e.preventDefault()
-                setSent(true)
+                if (submitting) return
+                const formData = new FormData(e.currentTarget)
+                formData.set(
+                  '_subject',
+                  'Nouveau message — Site EN PAYS WÊ'
+                )
+                setSubmitting(true)
+                setError(null)
+                try {
+                  await submitToFormspree(formData)
+                  setSent(true)
+                } catch (err) {
+                  setError(
+                    err instanceof Error
+                      ? err.message
+                      : 'Une erreur est survenue. Veuillez réessayer.'
+                  )
+                } finally {
+                  setSubmitting(false)
+                }
               }}
             >
               <div className="grid gap-4 sm:grid-cols-2">
@@ -102,7 +124,8 @@ function ContactForm() {
                   </Label>
                   <Input
                     id="firstname"
-                    name="firstname"
+                    name="Prénom"
+                    required
                     placeholder="Jean"
                     autoComplete="given-name"
                     className="h-11 rounded-xl border-white/15 bg-white/5 text-white placeholder:text-white/35 focus-visible:border-[oklch(0.72_0.18_42)] focus-visible:ring-[oklch(0.72_0.18_42/0.4)]"
@@ -117,7 +140,8 @@ function ContactForm() {
                   </Label>
                   <Input
                     id="lastname"
-                    name="lastname"
+                    name="Nom"
+                    required
                     placeholder="Dupont"
                     autoComplete="family-name"
                     className="h-11 rounded-xl border-white/15 bg-white/5 text-white placeholder:text-white/35 focus-visible:border-[oklch(0.72_0.18_42)] focus-visible:ring-[oklch(0.72_0.18_42/0.4)]"
@@ -136,6 +160,7 @@ function ContactForm() {
                   id="email"
                   name="email"
                   type="email"
+                  required
                   placeholder="jean@entreprise.fr"
                   autoComplete="email"
                   className="h-11 rounded-xl border-white/15 bg-white/5 text-white placeholder:text-white/35 focus-visible:border-[oklch(0.72_0.18_42)] focus-visible:ring-[oklch(0.72_0.18_42/0.4)]"
@@ -151,7 +176,7 @@ function ContactForm() {
                 </Label>
                 <Input
                   id="phone"
-                  name="phone"
+                  name="Téléphone"
                   type="tel"
                   placeholder="06 12 34 56 78"
                   autoComplete="tel"
@@ -168,20 +193,30 @@ function ContactForm() {
                 </Label>
                 <textarea
                   id="message"
-                  name="message"
+                  name="Message"
                   rows={5}
+                  required
                   placeholder="Décrivez votre projet en quelques mots…"
                   className="w-full rounded-xl border border-white/15 bg-white/5 px-3 py-2.5 text-sm leading-relaxed text-white transition-colors placeholder:text-white/35 focus-visible:border-[oklch(0.72_0.18_42)] focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-[oklch(0.72_0.18_42/0.4)]"
                 />
               </div>
 
+              {error ? (
+                <p className="rounded-lg bg-red-500/15 px-3 py-2 text-center text-xs text-red-200">
+                  {error}
+                </p>
+              ) : null}
+
               <Button
                 type="submit"
                 size="lg"
+                disabled={submitting}
                 className="group mt-1 w-full bg-[oklch(0.68_0.2_42)] text-white shadow-[0_10px_30px_-10px_oklch(0.68_0.2_42/0.8)] hover:bg-[oklch(0.62_0.2_42)]"
               >
-                Envoyer le message
-                <ArrowRight className="transition-transform group-hover:translate-x-0.5" />
+                {submitting ? 'Envoi en cours…' : 'Envoyer le message'}
+                {!submitting ? (
+                  <ArrowRight className="transition-transform group-hover:translate-x-0.5" />
+                ) : null}
               </Button>
 
               <p className="pt-1 text-center text-[11px] text-white/45">

@@ -17,10 +17,9 @@ interface NavLink {
 }
 
 const staticLinks: NavLink[] = [
-  { to: '/', label: 'Accueil' },
   { to: '/a-propos', label: 'À propos' },
   { to: '/services', label: 'Services' },
-  { to: '/contact', label: 'Contact' },
+  { to: '/formules', label: 'Formules' },
 ]
 
 export function Navbar() {
@@ -28,27 +27,21 @@ export function Navbar() {
   const [links, setLinks] = useState<NavLink[]>(staticLinks)
   const pathname = usePathname()
 
-  // Vérifier si la galerie et le blog sont activés
+  // Vérifier si le blog est activé
   useEffect(() => {
     const checkFeatures = async () => {
       try {
-        const [galleryRes, blogRes] = await Promise.all([
-          fetch('/api/gallery/settings'),
-          fetch('/api/blog/settings'),
-        ])
-        const gallery = await galleryRes.json()
+        const blogRes = await fetch('/api/blog/settings')
         const blog = await blogRes.json()
 
         const dynamicLinks: NavLink[] = [
-          { to: '/', label: 'Accueil' },
           { to: '/a-propos', label: 'À propos' },
           { to: '/services', label: 'Services' },
+          { to: '/formules', label: 'Formules' },
         ]
 
-        if (gallery.enabled) dynamicLinks.push({ to: '/gallery', label: 'Galerie' })
         if (blog.enabled) dynamicLinks.push({ to: '/blog', label: 'Blog' })
 
-        dynamicLinks.push({ to: '/contact', label: 'Contact' })
         setLinks(dynamicLinks)
       } catch (error) {
         console.error('Failed to check features:', error)
@@ -64,7 +57,7 @@ export function Navbar() {
         <Logo />
 
         <nav
-          className="hidden items-center gap-1 md:flex"
+          className="hidden items-center gap-3 md:flex lg:gap-5"
           aria-label="Navigation principale"
         >
           {links.map((l) => (
@@ -72,7 +65,7 @@ export function Navbar() {
               key={l.to}
               href={l.to}
               className={cn(
-                'rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-muted/80 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60',
+                'rounded-lg px-4 py-2 text-sm font-medium transition-colors hover:bg-muted/80 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60',
                 pathname === l.to
                   ? 'text-foreground'
                   : 'text-muted-foreground'
