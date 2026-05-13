@@ -1,4 +1,4 @@
-import { Mail, MapPin, Phone } from 'lucide-react'
+import { Clock, Instagram, Mail, MapPin, Phone } from 'lucide-react'
 import Link from 'next/link'
 
 import { Logo } from '@/components/layout/logo'
@@ -72,8 +72,13 @@ export function Footer() {
                 </span>
                 {siteConfig.email}
               </a>
-              <div className="flex items-start gap-3 text-sm text-zinc-400">
-                <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-white/5 text-primary">
+              <a
+                href={siteConfig.googleMapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex items-start gap-3 text-sm text-zinc-400 transition-colors hover:text-white"
+              >
+                <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-white/5 text-primary transition-colors group-hover:bg-primary/15">
                   <MapPin className="size-3.5" />
                 </span>
                 <span>
@@ -81,7 +86,25 @@ export function Footer() {
                   <br />
                   {siteConfig.address.postalCode} {siteConfig.address.city}
                 </span>
+              </a>
+              <div className="flex items-start gap-3 text-sm text-zinc-400">
+                <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-white/5 text-primary">
+                  <Clock className="size-3.5" />
+                </span>
+                <span>{siteConfig.hours.label}</span>
               </div>
+              <a
+                href={siteConfig.social.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram EN PAYS WÊ"
+                className="group inline-flex items-center gap-3 text-sm text-zinc-400 transition-colors hover:text-white"
+              >
+                <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-white/5 text-primary transition-colors group-hover:bg-primary/15">
+                  <Instagram className="size-3.5" />
+                </span>
+                <span>@enpayswe.dem</span>
+              </a>
             </div>
           </div>
 

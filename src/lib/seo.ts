@@ -9,13 +9,29 @@ export const siteConfig = {
   themeColor: '#ea580c',
   phone: '06 10 60 21 59',
   phoneFixe: '03 81 63 94 10',
-  email: 'contact@demenageurs-en-pays-we.fr',
+  email: 'contact@demenageurs-enpayswe.fr',
   siret: '10133809300012',
+  priceRange: '€€',
   address: {
     street: '25 rue Hector Berlioz',
     city: 'Besançon',
     postalCode: '25000',
     country: 'FR',
+  },
+  hours: {
+    days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+    opens: '08:00',
+    closes: '18:00',
+    label: 'Lun-Ven : 8h - 18h',
+  },
+  rating: {
+    value: 5,
+    count: 6,
+  },
+  googleMapsUrl:
+    'https://www.google.com/maps/search/?api=1&query=EN+PAYS+W%C3%8A+25+rue+Hector+Berlioz+25000+Besan%C3%A7on',
+  social: {
+    instagram: 'https://www.instagram.com/enpayswe.dem',
   },
   zones: [
     'Besançon',

@@ -1,21 +1,18 @@
 'use client'
 
-import { Star } from 'lucide-react'
+import { ExternalLink, Star } from 'lucide-react'
 
 import { SectionTitle } from '@/components/ui/section-title'
 import { useContent } from '@/hooks/use-content'
+import { siteConfig } from '@/lib/seo'
 
 const defaultTestimonials = [
-  { name: 'Marie D.', company: 'Déménagement · Besançon', text: "Équipe super sérieuse, ponctuelle et efficace. Tout est arrivé intact, on n'a rien eu à gérer. Je recommande vivement !", stars: 5 },
-  { name: 'Thomas L.', company: 'Transfert bureaux · Dijon', text: 'Déménagement de nos locaux fait en un week-end, sans aucune perte de temps le lundi matin. Professionnels et rapides.', stars: 5 },
-  { name: 'Camille B.', company: 'Particulier · Pontarlier', text: "Déménagement Besançon → Pontarlier géré de A à Z. Meubles démontés, remontés, tout emballé avec soin. Parfait.", stars: 5 },
-  { name: 'Laurent M.', company: 'Débarras maison · Dôle', text: 'Ils ont vidé la maison de mes parents en une journée, tri et déchèterie inclus. Gain de temps énorme, prix honnête.', stars: 5 },
-  { name: 'Nadia K.', company: 'Déménagement · Mulhouse', text: "Un accompagnement au top, des délais tenus et une équipe vraiment sympathique. Parfait sur toute la ligne.", stars: 5 },
-  { name: 'Sophie R.', company: 'Livraison meubles · Strasbourg', text: "Livraison rapide, soignée et au créneau annoncé. Les livreurs ont même monté les meubles à l'étage. Merci !", stars: 5 },
-  { name: 'Pierre V.', company: 'Particulier · Montbéliard', text: "Devis clair, prix respecté, déménagement fluide. Rien à redire, je les recommande à mes proches.", stars: 5 },
-  { name: 'Julie A.', company: 'Déménagement · Belfort', text: "Ils ont géré un 4 pièces avec deux étages sans ascenseur sans broncher. Impressionnée par leur organisation.", stars: 5 },
-  { name: 'Franck G.', company: 'Transport · Vesoul', text: "Transport d'une pièce fragile sur longue distance. Zéro casse, emballage parfait. Top service.", stars: 5 },
-  { name: 'Émilie T.', company: 'Particulier · Lons-le-Saunier', text: "Super expérience, équipe souriante et très pro. Le stress du déménagement a complètement disparu.", stars: 5 },
+  { name: 'Sid Malle', company: 'Déménagement · Avril 2026', text: "Très bonne expérience ! L'équipe a été ponctuelle, dynamique et très professionnelle. Ils ont pris soin de tous mes biens et ont travaillé rapidement tout en restant efficaces pour les déménageurs ENPAYSWE", stars: 5 },
+  { name: 'Adama Konate', company: 'Déménagement · Mars 2026', text: 'Très satisfait du service ! Déménagement réalisé rapidement et avec beaucoup de professionnalisme. Équipe sérieuse, ponctuelle et soigneuse. Je recommande fortement !', stars: 5 },
+  { name: 'Mamadou Tounkara', company: 'Déménagement · Mars 2026', text: "Un grand merci pour ce déménagement ! Équipe très sympa, efficace et à l'écoute. Tout s'est passé parfaitement, sans stress. Je referai appel à vous sans hésiter !", stars: 5 },
+  { name: 'Aboudramane Bamba', company: 'Déménagement · Mars 2026', text: "Très bonne expérience ! L'équipe a été ponctuelle, dynamique et très professionnelle. Ils ont pris soin de tous mes biens et ont travaillé rapidement tout en restant efficaces. Le déménagement s'est déroulé sans aucun souci. Je recommande vivement !", stars: 5 },
+  { name: 'Fatoumata Kini', company: 'Déménagement · Mars 2026', text: 'Bonne entreprise déménagement. En pays wê est une bonne entreprise déménagement. Mes objets sont biens protéger et je suis contente.', stars: 5 },
+  { name: 'Souleymane Sanogo', company: 'Déménagement · Mars 2026', text: 'Jeune entrepreneur sympathique et professionnel et très gentil. Mes biens sont très bien protégés. Service idéal.', stars: 5 },
 ]
 
 const defaults = {
@@ -112,7 +109,12 @@ export function TestimonialsSection() {
     <section className="overflow-hidden border-y border-border/60 bg-muted/10">
       <div className="mx-auto max-w-6xl px-4 pt-14 sm:px-6 lg:px-8 lg:pt-20">
         <div className="flex justify-center">
-          <div className="inline-flex items-center gap-3 rounded-full border border-border/70 bg-card px-4 py-2 shadow-sm">
+          <a
+            href={siteConfig.googleMapsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group inline-flex items-center gap-3 rounded-full border border-border/70 bg-card px-4 py-2 shadow-sm transition-colors hover:border-foreground/30 hover:bg-card/90"
+          >
             <GoogleLogo />
             <div className="flex items-center gap-0.5">
               {Array.from({ length: 5 }).map((_, i) => (
@@ -124,9 +126,10 @@ export function TestimonialsSection() {
               ))}
             </div>
             <span className="text-xs font-semibold text-foreground">
-              5,0 sur Google
+              {siteConfig.rating.value.toLocaleString('fr-FR', { minimumFractionDigits: 1 })} sur Google
             </span>
-          </div>
+            <ExternalLink className="size-3 text-muted-foreground transition-colors group-hover:text-foreground" aria-hidden />
+          </a>
         </div>
         <div className="mt-6">
           <SectionTitle

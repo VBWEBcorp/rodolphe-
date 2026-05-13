@@ -1,5 +1,7 @@
 import { siteConfig } from '@/lib/seo'
 
+const sameAs = Object.values(siteConfig.social).filter(Boolean)
+
 export function organizationJsonLd() {
   return {
     '@context': 'https://schema.org',
@@ -7,25 +9,37 @@ export function organizationJsonLd() {
     name: siteConfig.name,
     url: siteConfig.url,
     logo: `${siteConfig.url}/favicon.svg`,
-    contactPoint: {
-      '@type': 'ContactPoint',
-      telephone: siteConfig.phone,
-      contactType: 'customer service',
-      availableLanguage: 'French',
-    },
-    sameAs: [] as string[],
+    contactPoint: [
+      {
+        '@type': 'ContactPoint',
+        telephone: siteConfig.phone,
+        contactType: 'customer service',
+        availableLanguage: 'French',
+      },
+      {
+        '@type': 'ContactPoint',
+        telephone: siteConfig.phoneFixe,
+        contactType: 'customer service',
+        availableLanguage: 'French',
+      },
+    ],
+    sameAs,
   }
 }
 
 export function localBusinessJsonLd() {
   return {
     '@context': 'https://schema.org',
-    '@type': 'LocalBusiness',
+    '@type': 'MovingCompany',
+    '@id': `${siteConfig.url}/#business`,
     name: siteConfig.name,
     url: siteConfig.url,
     telephone: siteConfig.phone,
     email: siteConfig.email,
     image: siteConfig.ogImage,
+    logo: `${siteConfig.url}/favicon.svg`,
+    priceRange: siteConfig.priceRange,
+    description: siteConfig.description,
     address: {
       '@type': 'PostalAddress',
       streetAddress: siteConfig.address.street,
@@ -33,6 +47,27 @@ export function localBusinessJsonLd() {
       postalCode: siteConfig.address.postalCode,
       addressCountry: siteConfig.address.country,
     },
+    hasMap: siteConfig.googleMapsUrl,
+    areaServed: siteConfig.zones.map((city) => ({
+      '@type': 'City',
+      name: city,
+    })),
+    openingHoursSpecification: [
+      {
+        '@type': 'OpeningHoursSpecification',
+        dayOfWeek: siteConfig.hours.days,
+        opens: siteConfig.hours.opens,
+        closes: siteConfig.hours.closes,
+      },
+    ],
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: siteConfig.rating.value,
+      reviewCount: siteConfig.rating.count,
+      bestRating: 5,
+      worstRating: 1,
+    },
+    sameAs,
   }
 }
 
