@@ -52,14 +52,12 @@ export function localBusinessJsonLd() {
       '@type': 'City',
       name: city,
     })),
-    openingHoursSpecification: [
-      {
-        '@type': 'OpeningHoursSpecification',
-        dayOfWeek: siteConfig.hours.days,
-        opens: siteConfig.hours.opens,
-        closes: siteConfig.hours.closes,
-      },
-    ],
+    openingHoursSpecification: siteConfig.hours.spec.map((s) => ({
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: s.days,
+      opens: s.opens,
+      closes: s.closes,
+    })),
     aggregateRating: {
       '@type': 'AggregateRating',
       ratingValue: siteConfig.rating.value,

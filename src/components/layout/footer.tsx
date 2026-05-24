@@ -92,7 +92,12 @@ export function Footer() {
                 <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-white/5 text-primary">
                   <Clock className="size-3.5" />
                 </span>
-                <span>{siteConfig.hours.label}</span>
+                <span>
+                  {siteConfig.hours.label}
+                  <span className="block text-[13px] text-zinc-500">
+                    {siteConfig.hours.detail}
+                  </span>
+                </span>
               </div>
             </div>
             <div className="pt-1">

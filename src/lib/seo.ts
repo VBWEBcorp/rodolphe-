@@ -19,10 +19,20 @@ export const siteConfig = {
     country: 'FR',
   },
   hours: {
-    days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
-    opens: '08:00',
-    closes: '18:00',
-    label: 'Lun-Ven : 8h - 18h',
+    label: 'Ouvert 7j/7',
+    detail: 'Lun-Sam : 9h - 19h · Dim : 8h - 16h',
+    spec: [
+      {
+        days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+        opens: '09:00',
+        closes: '19:00',
+      },
+      {
+        days: ['Sunday'],
+        opens: '08:00',
+        closes: '16:00',
+      },
+    ],
   },
   rating: {
     value: 5,
