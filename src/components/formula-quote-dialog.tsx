@@ -182,6 +182,24 @@ export function FormulaQuoteDialog({ formula, open, onClose }: Props) {
 
                   <div className="space-y-1.5">
                     <Label
+                      htmlFor="formula-email"
+                      className="text-[11px] font-medium tracking-wider text-foreground/70 uppercase"
+                    >
+                      Email
+                    </Label>
+                    <Input
+                      id="formula-email"
+                      name="email"
+                      type="email"
+                      required
+                      autoComplete="email"
+                      placeholder="jean@exemple.fr"
+                      className="h-10"
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <Label
                       htmlFor="formula-phone"
                       className="text-[11px] font-medium tracking-wider text-foreground/70 uppercase"
                     >

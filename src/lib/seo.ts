@@ -32,7 +32,11 @@ export const siteConfig = {
     'https://www.google.com/maps/search/?api=1&query=EN+PAYS+W%C3%8A+25+rue+Hector+Berlioz+25000+Besan%C3%A7on',
   social: {
     instagram: 'https://www.instagram.com/enpayswe.dem',
+    facebook: 'https://www.facebook.com/share/1EK3eNZzz7/',
+    tiktok: 'https://www.tiktok.com/@enpayswe.dem',
   },
+  socialHandle: 'enpayswe.dem',
+  whatsapp: 'https://wa.me/33610602159',
   zones: [
     'Besançon',
     'Dijon',

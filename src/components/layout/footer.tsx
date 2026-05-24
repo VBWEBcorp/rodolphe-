@@ -1,7 +1,8 @@
-import { Clock, Instagram, Mail, MapPin, Phone } from 'lucide-react'
+import { Clock, Mail, MapPin, Phone } from 'lucide-react'
 import Link from 'next/link'
 
 import { Logo } from '@/components/layout/logo'
+import { SocialLinks } from '@/components/social-links'
 import { siteConfig } from '@/lib/seo'
 
 const navLinks = [
@@ -93,18 +94,16 @@ export function Footer() {
                 </span>
                 <span>{siteConfig.hours.label}</span>
               </div>
-              <a
-                href={siteConfig.social.instagram}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Instagram EN PAYS WÊ"
-                className="group inline-flex items-center gap-3 text-sm text-zinc-400 transition-colors hover:text-white"
-              >
-                <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-white/5 text-primary transition-colors group-hover:bg-primary/15">
-                  <Instagram className="size-3.5" />
-                </span>
-                <span>@enpayswe.dem</span>
-              </a>
+            </div>
+            <div className="pt-1">
+              <p className="mb-2.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-zinc-500">
+                Suivez-nous
+              </p>
+              <SocialLinks
+                className="flex items-center gap-4"
+                itemClassName="text-zinc-500 transition-colors hover:text-white"
+                iconClassName="size-[18px]"
+              />
             </div>
           </div>
 

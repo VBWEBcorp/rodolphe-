@@ -124,7 +124,7 @@ export function CtaSection() {
               {/* Fade bottom */}
               <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-[oklch(0.22_0.07_260)] to-transparent z-20" />
               {/* Fade left — smooth blend into text area */}
-              <div className="pointer-events-none absolute top-0 bottom-0 left-0 w-20 bg-gradient-to-r from-[oklch(0.17_0.05_260)] to-transparent z-20" />
+              <div className="pointer-events-none absolute inset-y-0 left-0 w-1/2 lg:w-3/5 bg-gradient-to-r from-[oklch(0.19_0.055_260)] via-[oklch(0.19_0.055_260)]/55 to-transparent z-20" />
 
               <div className="absolute inset-0 overflow-hidden">
                 <div className="flex gap-3 -rotate-6 translate-x-[10%]" style={{ height: '140%', marginTop: '-20%' }}>

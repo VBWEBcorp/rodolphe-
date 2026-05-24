@@ -4,7 +4,9 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowRight, CheckCircle2, Phone, Star } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
+import { MultiSelect } from '@/components/multi-select'
 import { ValuesMarquee } from '@/components/sections/values-marquee'
+import { SocialLinks } from '@/components/social-links'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -60,14 +62,21 @@ function QuickQuoteCard() {
         />
 
         <div className="relative">
-          <div className="inline-flex items-center gap-2 rounded-full border border-[oklch(0.72_0.2_42/0.3)] bg-[oklch(0.72_0.2_42/0.12)] px-3 py-1">
-            <span className="relative flex size-1.5">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[oklch(0.72_0.18_42)] opacity-75" />
-              <span className="relative inline-flex size-1.5 rounded-full bg-[oklch(0.72_0.18_42)]" />
-            </span>
-            <span className="font-display text-[10px] font-semibold tracking-[0.2em] text-[oklch(0.88_0.14_42)] uppercase">
-              Devis gratuit · 24h
-            </span>
+          <div className="flex items-center justify-between gap-3">
+            <div className="inline-flex items-center gap-2 rounded-full border border-[oklch(0.72_0.2_42/0.3)] bg-[oklch(0.72_0.2_42/0.12)] px-3 py-1">
+              <span className="relative flex size-1.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[oklch(0.72_0.18_42)] opacity-75" />
+                <span className="relative inline-flex size-1.5 rounded-full bg-[oklch(0.72_0.18_42)]" />
+              </span>
+              <span className="font-display text-[10px] font-semibold tracking-[0.2em] text-[oklch(0.88_0.14_42)] uppercase">
+                Devis gratuit · 24h
+              </span>
+            </div>
+            <SocialLinks
+              className="flex items-center gap-3"
+              itemClassName="text-white/50 transition-colors hover:text-white"
+              iconClassName="size-[17px]"
+            />
           </div>
 
           <h2 className="mt-4 font-display text-[22px] leading-tight tracking-[-0.01em] text-white sm:text-2xl">
@@ -126,6 +135,21 @@ function QuickQuoteCard() {
                 />
               </div>
 
+              <div className="space-y-1.5">
+                <Label htmlFor="hero-email" className="text-[11px] font-medium uppercase tracking-wider text-white/60">
+                  Email
+                </Label>
+                <Input
+                  id="hero-email"
+                  name="email"
+                  type="email"
+                  required
+                  placeholder="jean@exemple.fr"
+                  autoComplete="email"
+                  className="h-10 rounded-xl border-white/15 bg-white/5 text-white placeholder:text-white/35 focus-visible:border-[oklch(0.72_0.18_42)] focus-visible:ring-[oklch(0.72_0.18_42/0.4)]"
+                />
+              </div>
+
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
                   <Label htmlFor="hero-phone" className="text-[11px] font-medium uppercase tracking-wider text-white/60">
@@ -158,31 +182,19 @@ function QuickQuoteCard() {
                 <Label htmlFor="hero-type" className="text-[11px] font-medium uppercase tracking-wider text-white/60">
                   Type de prestation
                 </Label>
-                <select
+                <MultiSelect
                   id="hero-type"
                   name="Type de prestation"
-                  defaultValue=""
-                  className="h-10 w-full rounded-xl border border-white/15 bg-white/5 px-3 text-sm text-white transition-colors focus-visible:border-[oklch(0.72_0.18_42)] focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-[oklch(0.72_0.18_42/0.4)]"
-                >
-                  <option value="" disabled className="bg-[oklch(0.17_0.05_260)]">
-                    Sélectionnez…
-                  </option>
-                  <option value="Déménagement appartement" className="bg-[oklch(0.17_0.05_260)]">
-                    Déménagement appartement
-                  </option>
-                  <option value="Déménagement maison" className="bg-[oklch(0.17_0.05_260)]">
-                    Déménagement maison
-                  </option>
-                  <option value="Transfert de bureaux" className="bg-[oklch(0.17_0.05_260)]">
-                    Transfert de bureaux
-                  </option>
-                  <option value="Transport / livraison" className="bg-[oklch(0.17_0.05_260)]">
-                    Transport / livraison
-                  </option>
-                  <option value="Débarras / vidage" className="bg-[oklch(0.17_0.05_260)]">
-                    Débarras / vidage
-                  </option>
-                </select>
+                  placeholder="Sélectionnez…"
+                  openUp
+                  options={[
+                    'Déménagement appartement',
+                    'Déménagement maison',
+                    'Transfert de bureaux',
+                    'Transport / livraison',
+                    'Débarras / vidage',
+                  ]}
+                />
               </div>
 
               {error ? (
