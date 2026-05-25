@@ -67,7 +67,10 @@ export default function BlogPostEditor({ params }: { params: Promise<{ slug: str
     if (isNew) return
     const fetchPost = async () => {
       try {
-        const response = await fetch(`/api/blog/posts/${slug}`)
+        const token = localStorage.getItem('authToken')
+        const response = await fetch(`/api/blog/posts/${slug}?all=1`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
         if (response.ok) {
           const data = await response.json()
           setPost(data)

@@ -13,6 +13,7 @@ export interface IBlogPost extends Document {
   publishedAt?: Date
   metaTitle?: string
   metaDescription?: string
+  focusKeyword?: string
   createdAt: Date
   updatedAt: Date
 }
@@ -41,6 +42,7 @@ const BlogPostSchema = new Schema<IBlogPost>(
     publishedAt: { type: Date },
     metaTitle: String,
     metaDescription: String,
+    focusKeyword: String,
   },
   { timestamps: true }
 )

@@ -49,7 +49,7 @@ export default function AdminBlogPage() {
   const [saved, setSaved] = useState(false)
   const [newCategory, setNewCategory] = useState('')
   const [filterCategory, setFilterCategory] = useState<string>('all')
-  const [filterStatus, setFilterStatus] = useState<'all' | 'published' | 'draft'>('all')
+  const [filterStatus, setFilterStatus] = useState<'all' | 'visible' | 'scheduled'>('all')
 
   useEffect(() => {
     if (!localStorage.getItem('authToken')) {
@@ -63,7 +63,7 @@ export default function AdminBlogPage() {
         const token = localStorage.getItem('authToken')
         const [settingsRes, postsRes] = await Promise.all([
           fetch('/api/blog/settings'),
-          fetch('/api/blog/posts', {
+          fetch('/api/blog/posts?all=1', {
             headers: { Authorization: `Bearer ${token}` },
           }),
         ])
@@ -146,16 +146,22 @@ export default function AdminBlogPage() {
   const formatDate = (date: string) =>
     new Date(date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })
 
+  // En ligne = publié et date passée. Programmé = publié mais date future.
+  const isVisible = (p: BlogPost) =>
+    p.published && (!p.publishedAt || new Date(p.publishedAt).getTime() <= Date.now())
+  const isScheduled = (p: BlogPost) =>
+    p.published && !!p.publishedAt && new Date(p.publishedAt).getTime() > Date.now()
+
   // Filtered posts
   const filteredPosts = posts.filter((p) => {
     if (filterCategory !== 'all' && p.category !== filterCategory) return false
-    if (filterStatus === 'published' && !p.published) return false
-    if (filterStatus === 'draft' && p.published) return false
+    if (filterStatus === 'visible' && !isVisible(p)) return false
+    if (filterStatus === 'scheduled' && !isScheduled(p)) return false
     return true
   })
 
-  const publishedCount = posts.filter((p) => p.published).length
-  const draftCount = posts.filter((p) => !p.published).length
+  const visibleCount = posts.filter(isVisible).length
+  const scheduledCount = posts.filter(isScheduled).length
 
   if (loading) return <div className="p-6">Chargement...</div>
 
@@ -250,8 +256,8 @@ export default function AdminBlogPage() {
             <div className="flex gap-1 p-0.5 rounded-md bg-muted/50">
               {[
                 { value: 'all' as const, label: `Tous (${posts.length})` },
-                { value: 'published' as const, label: `Publiés (${publishedCount})` },
-                { value: 'draft' as const, label: `Brouillons (${draftCount})` },
+                { value: 'visible' as const, label: `En ligne (${visibleCount})` },
+                { value: 'scheduled' as const, label: `Programmés (${scheduledCount})` },
               ].map((f) => (
                 <button
                   key={f.value}
@@ -317,9 +323,13 @@ export default function AdminBlogPage() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <p className="font-medium text-foreground truncate">{post.title}</p>
-                      {post.published ? (
+                      {isVisible(post) ? (
                         <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wide text-emerald-600 bg-emerald-500/10 px-1.5 py-0.5 rounded">
-                          Publié
+                          En ligne
+                        </span>
+                      ) : isScheduled(post) ? (
+                        <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wide text-indigo-600 bg-indigo-500/10 px-1.5 py-0.5 rounded">
+                          Programmé
                         </span>
                       ) : (
                         <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wide text-amber-600 bg-amber-500/10 px-1.5 py-0.5 rounded">
@@ -335,6 +345,7 @@ export default function AdminBlogPage() {
                       )}
                       <span className="flex items-center gap-1">
                         <Calendar className="size-3" />
+                        {isScheduled(post) ? 'Prévu le ' : ''}
                         {formatDate(post.publishedAt || post.createdAt)}
                       </span>
                       <span className="text-muted-foreground/40 hidden sm:inline truncate">

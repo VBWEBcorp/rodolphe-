@@ -7,6 +7,9 @@ import { GallerySettings } from '@/models/Gallery'
 
 const baseUrl = siteConfig.url
 
+// Recalculé régulièrement : les articles publiés automatiquement entrent dans le sitemap.
+export const revalidate = 3600
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const pages: MetadataRoute.Sitemap = [
     {
@@ -44,7 +47,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     await connectDB()
 
-    // Gallery page if enabled
+    // Galerie si activée
     const gallerySettings = await GallerySettings.findOne()
     if (gallerySettings?.enabled) {
       pages.push({
@@ -55,9 +58,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       })
     }
 
-    // Blog pages if enabled
+    // Blog si activé
     const blogSettings = await BlogSettings.findOne()
-    if (blogSettings?.enabled) {
+    if (blogSettings?.enabled !== false) {
       pages.push({
         url: `${baseUrl}/blog`,
         lastModified: new Date(),
@@ -65,13 +68,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.8,
       })
 
-      // Individual blog posts
-      const posts = await BlogPost.find({ published: true }).select('slug updatedAt publishedAt')
-      for (const post of posts) {
+      // Articles publiés dont la date est passée (publication automatique)
+      const posts = await BlogPost.find({
+        published: true,
+        publishedAt: { $lte: new Date() },
+      })
+        .select('slug updatedAt publishedAt')
+        .lean()
+
+      for (const post of posts as any[]) {
         pages.push({
           url: `${baseUrl}/blog/${post.slug}`,
           lastModified: new Date(post.updatedAt || post.publishedAt),
-          changeFrequency: 'weekly',
+          changeFrequency: 'monthly',
           priority: 0.7,
         })
       }

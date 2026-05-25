@@ -8,27 +8,36 @@ import BlogPostContent from './blog-post-content'
 
 type Params = Promise<{ slug: string }>
 
-// Revalidate every 60 minutes — new articles will be picked up automatically
+// Revalidation horaire : un article programmé devient visible dans l'heure suivant sa date.
 export const revalidate = 3600
 
-// Pre-render all published blog posts at build time
+// Pré-rend les articles déjà visibles. Les futurs sont rendus à la demande une fois leur date atteinte.
 export async function generateStaticParams() {
   try {
     await connectDB()
-    const posts = await BlogPost.find({ published: true }).select('slug').lean()
-    return posts.map((post) => ({ slug: (post as any).slug }))
+    const posts = await BlogPost.find({
+      published: true,
+      publishedAt: { $lte: new Date() },
+    })
+      .select('slug')
+      .lean()
+    return posts.map((post) => ({ slug: (post as { slug: string }).slug }))
   } catch {
     return []
   }
 }
 
-// Generate SEO metadata server-side — visible to Google on first crawl
+// Métadonnées SEO côté serveur — lues par Google dès le premier crawl.
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const { slug } = await params
 
   try {
     await connectDB()
-    const post = await BlogPost.findOne({ slug, published: true }).lean() as any
+    const post = (await BlogPost.findOne({
+      slug,
+      published: true,
+      publishedAt: { $lte: new Date() },
+    }).lean()) as any
 
     if (!post) return {}
 
@@ -47,7 +56,9 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
         url,
         siteName: siteConfig.name,
         locale: siteConfig.locale,
-        images: post.coverImage ? [{ url: post.coverImage, width: 1200, height: 630, alt: title }] : [],
+        images: post.coverImage
+          ? [{ url: post.coverImage, width: 1200, height: 630, alt: title }]
+          : [],
         publishedTime: post.publishedAt?.toISOString(),
         modifiedTime: post.updatedAt?.toISOString(),
         authors: post.author ? [post.author] : [],
@@ -71,14 +82,16 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
 export default async function BlogPostPage({ params }: { params: Params }) {
   const { slug } = await params
 
-  // Server-side check: if post doesn't exist or isn't published, 404
   try {
     await connectDB()
-    const post = await BlogPost.findOne({ slug, published: true }).lean() as any
+    const post = (await BlogPost.findOne({
+      slug,
+      published: true,
+      publishedAt: { $lte: new Date() },
+    }).lean()) as any
 
     if (!post) notFound()
 
-    // Render JSON-LD server-side for structured data
     const jsonLd = {
       '@context': 'https://schema.org',
       '@type': 'BlogPosting',
