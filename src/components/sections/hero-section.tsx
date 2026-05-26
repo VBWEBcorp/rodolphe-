@@ -139,9 +139,10 @@ export function HeroSection() {
         />
       </div>
 
-      <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-4 pt-16 pb-12 sm:px-6 sm:pt-24 sm:pb-16 lg:grid-cols-[1.15fr_0.9fr] lg:gap-14 lg:px-8 lg:pt-28 lg:pb-20">
-        {/* Left column — full text */}
+      <div className="relative mx-auto flex max-w-3xl flex-col items-center px-4 pt-16 pb-12 text-center sm:px-6 sm:pt-24 sm:pb-16 lg:pt-28 lg:pb-20">
+        {/* Texte — centré */}
         <motion.div
+          className="flex flex-col items-center"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease }}
@@ -156,7 +157,7 @@ export function HeroSection() {
             </span>
           </div>
 
-          <h1 className="mt-6 font-display text-4xl leading-[1.02] tracking-[-0.035em] text-white sm:text-5xl lg:text-[60px]">
+          <h1 className="mt-6 font-display text-4xl leading-[1.02] tracking-[-0.035em] text-white sm:text-5xl lg:text-[64px]">
             {leading}{' '}
             <span className="relative inline-block whitespace-nowrap">
               <span className="bg-gradient-to-r from-[oklch(0.78_0.16_42)] via-[oklch(0.72_0.2_42)] to-[oklch(0.68_0.22_28)] bg-clip-text text-transparent">
@@ -182,14 +183,14 @@ export function HeroSection() {
             </span>
           </h1>
 
-          <p className="mt-7 max-w-xl text-pretty text-base leading-relaxed text-white/80 sm:text-lg">
+          <p className="mt-6 max-w-2xl text-pretty text-base leading-relaxed text-white/80 sm:text-lg">
             {hero.description}
           </p>
 
-          {/* Bullets */}
-          <ul className="mt-7 space-y-2.5">
+          {/* Bullets — centrés */}
+          <ul className="mt-7 flex flex-wrap items-center justify-center gap-x-6 gap-y-2.5">
             {bullets.map((b) => (
-              <li key={b} className="flex items-center gap-3 text-sm text-white/85 sm:text-[15px]">
+              <li key={b} className="flex items-center gap-2.5 text-sm text-white/85 sm:text-[15px]">
                 <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-[oklch(0.72_0.2_42/0.2)] ring-1 ring-[oklch(0.72_0.2_42/0.4)]">
                   <CheckCircle2 className="size-3 text-[oklch(0.88_0.14_42)]" aria-hidden />
                 </span>
@@ -198,8 +199,8 @@ export function HeroSection() {
             ))}
           </ul>
 
-          {/* CTA — téléphone direct (le devis est dans la carte à droite) */}
-          <div className="mt-8">
+          {/* Téléphone direct + avis Google */}
+          <div className="mt-8 flex flex-col items-center gap-5 sm:flex-row sm:gap-7">
             <Button
               size="lg"
               variant="outline"
@@ -211,21 +212,20 @@ export function HeroSection() {
                 {siteConfig.phone}
               </a>
             </Button>
-          </div>
-
-          {/* Trust row */}
-          <div className="mt-10 flex items-center gap-2">
-            <div className="flex items-center gap-0.5">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Star key={i} className="size-4 fill-[oklch(0.82_0.17_80)] text-[oklch(0.82_0.17_80)]" />
-              ))}
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-0.5">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <Star key={i} className="size-4 fill-[oklch(0.82_0.17_80)] text-[oklch(0.82_0.17_80)]" />
+                ))}
+              </div>
+              <span className="text-xs font-semibold text-white/85">5,0 sur Google</span>
             </div>
-            <span className="text-xs font-semibold text-white/85">5,0 sur Google</span>
           </div>
         </motion.div>
 
-        {/* Right column — quick quote form */}
+        {/* Formulaire de devis — sous le titre, centré (même sur ordinateur) */}
         <motion.div
+          className="mt-12 w-full max-w-xl text-left"
           initial={{ opacity: 0, y: 20, scale: 0.97 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.8, ease, delay: 0.2 }}
@@ -234,7 +234,7 @@ export function HeroSection() {
         </motion.div>
 
         {/* Slide dots */}
-        <div className="lg:col-span-2 flex justify-center gap-2">
+        <div className="mt-12 flex justify-center gap-2">
           {images.map((_: string, i: number) => (
             <button
               key={i}
