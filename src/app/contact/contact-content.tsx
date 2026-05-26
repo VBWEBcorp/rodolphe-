@@ -1,16 +1,12 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { ArrowRight, CheckCircle2, Mail, MapPin, Phone } from 'lucide-react'
-import { useState } from 'react'
+import { Mail, MapPin, Phone } from 'lucide-react'
 
+import { DevisForm } from '@/components/devis-form'
 import { PageHero } from '@/components/sections/page-hero'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { Card, CardContent } from '@/components/ui/card'
 import { useContent } from '@/hooks/use-content'
-import { submitToFormspree } from '@/lib/formspree'
 import { siteConfig } from '@/lib/seo'
 
 const ease = [0.22, 1, 0.36, 1] as const
@@ -33,10 +29,6 @@ const defaults = {
 }
 
 function ContactForm() {
-  const [sent, setSent] = useState(false)
-  const [submitting, setSubmitting] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-
   return (
     <div className="relative">
       {/* Ambient glow */}
@@ -69,167 +61,21 @@ function ContactForm() {
           </div>
 
           <h2 className="mt-4 font-display text-2xl leading-tight tracking-[-0.01em] text-white sm:text-[28px]">
-            Envoyer un message
+            Demande de devis
           </h2>
           <p className="mt-2 text-sm leading-relaxed text-white/70">
-            Remplissez le formulaire, nous revenons vers vous rapidement avec une estimation claire et gratuite.
+            Décrivez votre déménagement (adresses, dates, volume). Nous revenons
+            vers vous sous 24h avec une estimation claire et gratuite.
           </p>
 
-          {sent ? (
-            <div className="mt-8 rounded-2xl border border-[oklch(0.72_0.18_42/0.3)] bg-[oklch(0.72_0.18_42/0.1)] p-8 text-center">
-              <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-[oklch(0.72_0.2_42)] text-white shadow-lg">
-                <CheckCircle2 className="size-6" aria-hidden />
-              </div>
-              <p className="mt-4 font-display text-base font-semibold text-white">
-                Message bien envoyé
-              </p>
-              <p className="mt-1.5 text-sm text-white/70">
-                Merci ! On vous recontacte rapidement pour échanger sur votre projet.
-              </p>
-            </div>
-          ) : (
-            <form
-              className="mt-6 space-y-4"
-              onSubmit={async (e) => {
-                e.preventDefault()
-                if (submitting) return
-                const formData = new FormData(e.currentTarget)
-                formData.set(
-                  '_subject',
-                  'Nouveau message — Site EN PAYS WÊ'
-                )
-                setSubmitting(true)
-                setError(null)
-                try {
-                  await submitToFormspree(formData)
-                  setSent(true)
-                } catch (err) {
-                  setError(
-                    err instanceof Error
-                      ? err.message
-                      : 'Une erreur est survenue. Veuillez réessayer.'
-                  )
-                } finally {
-                  setSubmitting(false)
-                }
-              }}
-            >
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-1.5">
-                  <Label
-                    htmlFor="firstname"
-                    className="text-[11px] font-medium uppercase tracking-wider text-white/60"
-                  >
-                    Prénom
-                  </Label>
-                  <Input
-                    id="firstname"
-                    name="Prénom"
-                    required
-                    placeholder="Jean"
-                    autoComplete="given-name"
-                    className="h-11 rounded-xl border-white/15 bg-white/5 text-white placeholder:text-white/35 focus-visible:border-[oklch(0.72_0.18_42)] focus-visible:ring-[oklch(0.72_0.18_42/0.4)]"
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <Label
-                    htmlFor="lastname"
-                    className="text-[11px] font-medium uppercase tracking-wider text-white/60"
-                  >
-                    Nom
-                  </Label>
-                  <Input
-                    id="lastname"
-                    name="Nom"
-                    required
-                    placeholder="Dupont"
-                    autoComplete="family-name"
-                    className="h-11 rounded-xl border-white/15 bg-white/5 text-white placeholder:text-white/35 focus-visible:border-[oklch(0.72_0.18_42)] focus-visible:ring-[oklch(0.72_0.18_42/0.4)]"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-1.5">
-                <Label
-                  htmlFor="email"
-                  className="text-[11px] font-medium uppercase tracking-wider text-white/60"
-                >
-                  Email
-                </Label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  required
-                  placeholder="jean@entreprise.fr"
-                  autoComplete="email"
-                  className="h-11 rounded-xl border-white/15 bg-white/5 text-white placeholder:text-white/35 focus-visible:border-[oklch(0.72_0.18_42)] focus-visible:ring-[oklch(0.72_0.18_42/0.4)]"
-                />
-              </div>
-
-              <div className="space-y-1.5">
-                <Label
-                  htmlFor="phone"
-                  className="text-[11px] font-medium uppercase tracking-wider text-white/60"
-                >
-                  Téléphone <span className="text-white/35 normal-case tracking-normal">(optionnel)</span>
-                </Label>
-                <Input
-                  id="phone"
-                  name="Téléphone"
-                  type="tel"
-                  placeholder="06 12 34 56 78"
-                  autoComplete="tel"
-                  className="h-11 rounded-xl border-white/15 bg-white/5 text-white placeholder:text-white/35 focus-visible:border-[oklch(0.72_0.18_42)] focus-visible:ring-[oklch(0.72_0.18_42/0.4)]"
-                />
-              </div>
-
-              <div className="space-y-1.5">
-                <Label
-                  htmlFor="message"
-                  className="text-[11px] font-medium uppercase tracking-wider text-white/60"
-                >
-                  Votre message
-                </Label>
-                <textarea
-                  id="message"
-                  name="Message"
-                  rows={5}
-                  required
-                  placeholder="Décrivez votre projet en quelques mots…"
-                  className="w-full rounded-xl border border-white/15 bg-white/5 px-3 py-2.5 text-sm leading-relaxed text-white transition-colors placeholder:text-white/35 focus-visible:border-[oklch(0.72_0.18_42)] focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-[oklch(0.72_0.18_42/0.4)]"
-                />
-              </div>
-
-              {error ? (
-                <p className="rounded-lg bg-red-500/15 px-3 py-2 text-center text-xs text-red-200">
-                  {error}
-                </p>
-              ) : null}
-
-              <Button
-                type="submit"
-                size="lg"
-                disabled={submitting}
-                className="group mt-1 w-full bg-[oklch(0.68_0.2_42)] text-white shadow-[0_10px_30px_-10px_oklch(0.68_0.2_42/0.8)] hover:bg-[oklch(0.62_0.2_42)]"
-              >
-                {submitting ? 'Envoi en cours…' : 'Envoyer le message'}
-                {!submitting ? (
-                  <ArrowRight className="transition-transform group-hover:translate-x-0.5" />
-                ) : null}
-              </Button>
-
-              <p className="pt-1 text-center text-[11px] text-white/45">
-                Ou appelez-nous directement au{' '}
-                <a
-                  href={`tel:${siteConfig.phone.replace(/\s/g, '')}`}
-                  className="font-semibold text-white/80 underline-offset-2 hover:underline"
-                >
-                  {siteConfig.phone}
-                </a>
-              </p>
-            </form>
-          )}
+          <DevisForm
+            theme="dark"
+            className="mt-6"
+            subject="Demande de devis — Site EN PAYS WÊ"
+            submitLabel="Envoyer ma demande"
+            successTitle="Demande bien envoyée"
+            successText="Merci ! On vous recontacte sous 24h pour échanger sur votre projet."
+          />
         </div>
       </div>
     </div>

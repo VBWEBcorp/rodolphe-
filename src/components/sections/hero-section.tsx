@@ -1,17 +1,14 @@
 'use client'
 
 import { AnimatePresence, motion } from 'framer-motion'
-import { ArrowRight, CheckCircle2, Phone, Star } from 'lucide-react'
+import { CheckCircle2, Phone, Star } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
-import { MultiSelect } from '@/components/multi-select'
+import { DevisForm } from '@/components/devis-form'
 import { ValuesMarquee } from '@/components/sections/values-marquee'
 import { SocialLinks } from '@/components/social-links'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { useContent } from '@/hooks/use-content'
-import { submitToFormspree } from '@/lib/formspree'
 import { siteConfig } from '@/lib/seo'
 
 const ease = [0.22, 1, 0.36, 1] as const
@@ -41,10 +38,6 @@ const bullets = [
 ]
 
 function QuickQuoteCard() {
-  const [sent, setSent] = useState(false)
-  const [submitting, setSubmitting] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-
   return (
     <div className="relative">
       {/* Ambient glow */}
@@ -83,149 +76,18 @@ function QuickQuoteCard() {
             Obtenez votre devis
           </h2>
           <p className="mt-1.5 text-[13px] leading-relaxed text-white/70">
-            Quelques infos et on vous rappelle sous 24h avec une estimation claire.
+            Décrivez votre déménagement, on vous rappelle sous 24h avec une
+            estimation claire et gratuite.
           </p>
 
-          {sent ? (
-            <div className="mt-6 rounded-2xl border border-[oklch(0.72_0.18_42/0.3)] bg-[oklch(0.72_0.18_42/0.1)] p-5 text-center">
-              <div className="mx-auto flex size-10 items-center justify-center rounded-full bg-[oklch(0.72_0.2_42)] text-white">
-                <CheckCircle2 className="size-5" aria-hidden />
-              </div>
-              <p className="mt-3 font-display text-sm font-semibold text-white">
-                Demande bien envoyée
-              </p>
-              <p className="mt-1 text-xs text-white/70">
-                On vous rappelle très vite pour en discuter.
-              </p>
-            </div>
-          ) : (
-            <form
-              className="mt-5 space-y-3"
-              onSubmit={async (e) => {
-                e.preventDefault()
-                if (submitting) return
-                const formData = new FormData(e.currentTarget)
-                formData.set('_subject', 'Demande de devis rapide — Site web')
-                setSubmitting(true)
-                setError(null)
-                try {
-                  await submitToFormspree(formData)
-                  setSent(true)
-                } catch (err) {
-                  setError(
-                    err instanceof Error
-                      ? err.message
-                      : 'Une erreur est survenue. Veuillez réessayer.'
-                  )
-                } finally {
-                  setSubmitting(false)
-                }
-              }}
-            >
-              <div className="space-y-1.5">
-                <Label htmlFor="hero-name" className="text-[11px] font-medium uppercase tracking-wider text-white/60">
-                  Nom complet
-                </Label>
-                <Input
-                  id="hero-name"
-                  name="Nom complet"
-                  required
-                  placeholder="Jean Dupont"
-                  className="h-10 rounded-xl border-white/15 bg-white/5 text-white placeholder:text-white/35 focus-visible:border-[oklch(0.72_0.18_42)] focus-visible:ring-[oklch(0.72_0.18_42/0.4)]"
-                />
-              </div>
-
-              <div className="space-y-1.5">
-                <Label htmlFor="hero-email" className="text-[11px] font-medium uppercase tracking-wider text-white/60">
-                  Email
-                </Label>
-                <Input
-                  id="hero-email"
-                  name="email"
-                  type="email"
-                  required
-                  placeholder="jean@exemple.fr"
-                  autoComplete="email"
-                  className="h-10 rounded-xl border-white/15 bg-white/5 text-white placeholder:text-white/35 focus-visible:border-[oklch(0.72_0.18_42)] focus-visible:ring-[oklch(0.72_0.18_42/0.4)]"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-1.5">
-                  <Label htmlFor="hero-phone" className="text-[11px] font-medium uppercase tracking-wider text-white/60">
-                    Téléphone
-                  </Label>
-                  <Input
-                    id="hero-phone"
-                    name="Téléphone"
-                    type="tel"
-                    required
-                    placeholder="06 12 34 56 78"
-                    autoComplete="tel"
-                    className="h-10 rounded-xl border-white/15 bg-white/5 text-white placeholder:text-white/35 focus-visible:border-[oklch(0.72_0.18_42)] focus-visible:ring-[oklch(0.72_0.18_42/0.4)]"
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <Label htmlFor="hero-date" className="text-[11px] font-medium uppercase tracking-wider text-white/60">
-                    Date
-                  </Label>
-                  <Input
-                    id="hero-date"
-                    name="Date souhaitée"
-                    type="date"
-                    className="h-10 rounded-xl border-white/15 bg-white/5 text-white placeholder:text-white/35 focus-visible:border-[oklch(0.72_0.18_42)] focus-visible:ring-[oklch(0.72_0.18_42/0.4)] [color-scheme:dark]"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-1.5">
-                <Label htmlFor="hero-type" className="text-[11px] font-medium uppercase tracking-wider text-white/60">
-                  Type de prestation
-                </Label>
-                <MultiSelect
-                  id="hero-type"
-                  name="Type de prestation"
-                  placeholder="Sélectionnez…"
-                  openUp
-                  options={[
-                    'Déménagement appartement',
-                    'Déménagement maison',
-                    'Transfert de bureaux',
-                    'Transport / livraison',
-                    'Débarras / vidage',
-                  ]}
-                />
-              </div>
-
-              {error ? (
-                <p className="rounded-lg bg-red-500/15 px-3 py-2 text-center text-[11px] text-red-200">
-                  {error}
-                </p>
-              ) : null}
-
-              <Button
-                type="submit"
-                size="lg"
-                disabled={submitting}
-                className="group w-full bg-[oklch(0.68_0.2_42)] text-white shadow-[0_10px_30px_-10px_oklch(0.68_0.2_42/0.8)] hover:bg-[oklch(0.62_0.2_42)]"
-              >
-                {submitting ? 'Envoi en cours…' : 'Recevoir mon devis'}
-                {!submitting ? (
-                  <ArrowRight className="transition-transform group-hover:translate-x-0.5" />
-                ) : null}
-              </Button>
-
-              <p className="pt-1 text-center text-[11px] text-white/45">
-                Ou appelez-nous au{' '}
-                <a
-                  href={`tel:${siteConfig.phone.replace(/\s/g, '')}`}
-                  className="font-semibold text-white/80 underline-offset-2 hover:underline"
-                >
-                  {siteConfig.phone}
-                </a>
-              </p>
-            </form>
-          )}
+          <DevisForm
+            theme="dark"
+            className="mt-5"
+            subject="Demande de devis — Site EN PAYS WÊ"
+            submitLabel="Recevoir mon devis"
+            successTitle="Demande bien envoyée"
+            successText="Merci ! On vous recontacte sous 24h avec une estimation claire et gratuite."
+          />
         </div>
       </div>
     </div>
