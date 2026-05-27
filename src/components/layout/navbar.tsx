@@ -27,12 +27,16 @@ export function Navbar() {
   const [links, setLinks] = useState<NavLink[]>(staticLinks)
   const pathname = usePathname()
 
-  // Vérifier si le blog est activé
+  // Vérifier les fonctionnalités activées (blog, galerie)
   useEffect(() => {
     const checkFeatures = async () => {
       try {
-        const blogRes = await fetch('/api/blog/settings')
+        const [blogRes, galleryRes] = await Promise.all([
+          fetch('/api/blog/settings'),
+          fetch('/api/gallery/settings'),
+        ])
         const blog = await blogRes.json()
+        const gallery = await galleryRes.json().catch(() => ({}))
 
         const dynamicLinks: NavLink[] = [
           { to: '/a-propos', label: 'À propos' },
@@ -40,6 +44,7 @@ export function Navbar() {
           { to: '/formules', label: 'Formules' },
         ]
 
+        if (gallery.enabled) dynamicLinks.push({ to: '/gallery', label: 'Galerie' })
         if (blog.enabled) dynamicLinks.push({ to: '/blog', label: 'Blog' })
 
         setLinks(dynamicLinks)

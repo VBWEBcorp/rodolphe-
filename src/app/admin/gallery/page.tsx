@@ -49,9 +49,12 @@ export default function AdminGalleryPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const token = localStorage.getItem('authToken')
         const [settingsRes, imagesRes] = await Promise.all([
           fetch('/api/gallery/settings'),
-          fetch('/api/gallery/images'),
+          fetch('/api/gallery/images', {
+            headers: token ? { Authorization: `Bearer ${token}` } : {},
+          }),
         ])
 
         const settingsData = await settingsRes.json()
@@ -293,15 +296,11 @@ export default function AdminGalleryPage() {
             />
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="imageUrl">URL de l'image</Label>
-            <Input
-              id="imageUrl"
-              value={newImage.imageUrl}
-              onChange={(e) => setNewImage({ ...newImage, imageUrl: e.target.value })}
-              placeholder="https://..."
-            />
-          </div>
+          <ImageField
+            label="Image (upload ou lien)"
+            value={newImage.imageUrl}
+            onChange={(v) => setNewImage({ ...newImage, imageUrl: v })}
+          />
 
           <div className="space-y-2">
             <Label htmlFor="category">Catégorie</Label>

@@ -7,14 +7,15 @@ import { Plus, Trash2 } from 'lucide-react'
 
 const defaults = {
   eyebrow: 'Témoignages',
-  title: 'Ils nous font confiance',
-  description: 'Des entreprises de tous horizons qui ont gagné en visibilité et en crédibilité.',
+  title: 'Ils nous ont confié leur déménagement',
+  description: 'Particuliers et professionnels partout en Franche-Comté et dans le Grand Est : la confiance se mesure aux retours de nos clients.',
   testimonials: [
-    { name: 'Marie D.', company: 'Boulangerie Le Fournil', text: 'Depuis le nouveau site, je reçois 3 fois plus d\'appels. Les clients nous trouvent enfin sur Google.', stars: 5 },
-    { name: 'Thomas L.', company: 'Cabinet Conseil TLR', text: 'Un travail soigné, un site clair et professionnel. Mes prospects comprennent immédiatement ce que je propose.', stars: 5 },
-    { name: 'Camille B.', company: 'Atelier Camille', text: 'Le site reflète parfaitement l\'univers de ma marque. J\'ai gagné en crédibilité auprès de mes clients.', stars: 5 },
-    { name: 'Laurent M.', company: 'LM Rénovation', text: 'En trois mois, mon chiffre a augmenté de 40 %. Le site et le SEO font vraiment la différence.', stars: 5 },
-    { name: 'Nadia K.', company: 'Agence NovaTour', text: 'Un accompagnement au top, des délais respectés et un résultat qui dépasse mes attentes.', stars: 5 },
+    { name: 'Sid Malle', company: 'Déménagement · Avril 2026', text: "Très bonne expérience ! L'équipe a été ponctuelle, dynamique et très professionnelle. Ils ont pris soin de tous mes biens et ont travaillé rapidement tout en restant efficaces pour les déménageurs ENPAYSWE", stars: 5 },
+    { name: 'Adama Konate', company: 'Déménagement · Mars 2026', text: 'Très satisfait du service ! Déménagement réalisé rapidement et avec beaucoup de professionnalisme. Équipe sérieuse, ponctuelle et soigneuse. Je recommande fortement !', stars: 5 },
+    { name: 'Mamadou Tounkara', company: 'Déménagement · Mars 2026', text: "Un grand merci pour ce déménagement ! Équipe très sympa, efficace et à l'écoute. Tout s'est passé parfaitement, sans stress. Je referai appel à vous sans hésiter !", stars: 5 },
+    { name: 'Aboudramane Bamba', company: 'Déménagement · Mars 2026', text: "Très bonne expérience ! L'équipe a été ponctuelle, dynamique et très professionnelle. Ils ont pris soin de tous mes biens et ont travaillé rapidement tout en restant efficaces. Le déménagement s'est déroulé sans aucun souci. Je recommande vivement !", stars: 5 },
+    { name: 'Fatoumata Kini', company: 'Déménagement · Mars 2026', text: 'Bonne entreprise déménagement. En pays wê est une bonne entreprise déménagement. Mes objets sont biens protéger et je suis contente.', stars: 5 },
+    { name: 'Souleymane Sanogo', company: 'Déménagement · Mars 2026', text: 'Jeune entrepreneur sympathique et professionnel et très gentil. Mes biens sont très bien protégés. Service idéal.', stars: 5 },
   ],
 }
 

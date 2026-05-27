@@ -6,16 +6,17 @@ import { FieldEditor, SectionEditor, ImageField } from '@/components/admin/field
 const defaults = {
   hero: {
     eyebrow: 'Contact',
-    title: 'Parlons de votre projet',
-    description: 'Remplissez le formulaire ci-dessous ou contactez-nous directement. Nous répondons sous 24h.',
-    image: 'https://images.unsplash.com/photo-1423666639041-f56000c27a9a?auto=format&fit=crop&w=1920&q=80',
+    title: 'Un projet de déménagement ?',
+    description:
+      'Décrivez-nous votre besoin en quelques lignes : volume, adresses, date souhaitée. Nous vous rappelons sous 24h avec un devis clair et gratuit.',
+    image: 'https://i.ibb.co/hxnSQh8R/IMG-1932.jpg',
   },
   info: {
-    phone: '',
-    email: '',
-    street: '',
-    postalCode: '',
-    city: '',
+    phone: '06 10 60 21 59',
+    email: 'contact@demenageurs-enpayswe.fr',
+    street: '25 rue Hector Berlioz',
+    postalCode: '25000',
+    city: 'Besançon',
   },
 }
 

@@ -9,10 +9,19 @@ import { FormulaQuoteDialog } from '@/components/formula-quote-dialog'
 import { PageHero } from '@/components/sections/page-hero'
 import { Button } from '@/components/ui/button'
 import { SectionTitle } from '@/components/ui/section-title'
-import { formulas, type Formula } from '@/lib/formulas'
+import { useContent } from '@/hooks/use-content'
+import { formulas as defaultFormulas, type Formula } from '@/lib/formulas'
 import { siteConfig } from '@/lib/seo'
 
 const ease = [0.22, 1, 0.36, 1] as const
+
+const defaultHero = {
+  eyebrow: 'Nos formules',
+  title: 'Le déménagement qui vous correspond',
+  description:
+    "De la formule économique au service clé en main, nous adaptons notre prestation à votre budget et à votre niveau d'implication.",
+  image: 'https://i.ibb.co/Zp1dLCHs/IMG-1931.jpg',
+}
 
 function BigCarousel({ images, alt }: { images: string[]; alt: string }) {
   const [index, setIndex] = useState(0)
@@ -58,12 +67,18 @@ function BigCarousel({ images, alt }: { images: string[]; alt: string }) {
   )
 }
 
-function FormulasOverview({ onRequest }: { onRequest: (f: Formula) => void }) {
+function FormulasOverview({
+  formulas,
+  onRequest,
+}: {
+  formulas: Formula[]
+  onRequest: (f: Formula) => void
+}) {
   return (
     <section className="border-b border-border/60 bg-background">
       <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
         <SectionTitle
-          eyebrow="Nos 4 formules"
+          eyebrow={`Nos ${formulas.length} formules`}
           title="Trouvez la formule qui vous ressemble"
           description="De la solution la plus économique au service clé en main, choisissez le niveau d'accompagnement qui vous convient."
         />
@@ -113,10 +128,12 @@ function FormulasOverview({ onRequest }: { onRequest: (f: Formula) => void }) {
 
 function FormulaDetail({
   index,
+  total,
   formula,
   onRequest,
 }: {
   index: number
+  total: number
   formula: Formula
   onRequest: (f: Formula) => void
 }) {
@@ -157,7 +174,7 @@ function FormulaDetail({
                 }`}
               >
                 {formula.highlight ? <Sparkles className="size-3" /> : null}
-                Formule {index + 1} / {formulas.length}
+                Formule {index + 1} / {total}
               </span>
               {formula.badge ? (
                 <span className="rounded-full bg-foreground/5 px-3 py-1 text-xs font-semibold text-foreground/80 ring-1 ring-foreground/10">
@@ -298,21 +315,37 @@ function ComparisonCta() {
 
 export function FormulesContent() {
   const [selected, setSelected] = useState<Formula | null>(null)
+  const { data } = useContent('formules', {
+    hero: defaultHero,
+    formulas: defaultFormulas,
+  })
+
+  const hero = data.hero ?? defaultHero
+  const formulas: Formula[] =
+    Array.isArray(data.formulas) && data.formulas.length > 0
+      ? data.formulas
+      : defaultFormulas
 
   return (
     <>
       <PageHero
-        eyebrow="Nos formules"
-        title="Le déménagement qui vous correspond"
-        description="De la formule économique au service clé en main, nous adaptons notre prestation à votre budget et à votre niveau d'implication."
-        image="https://i.ibb.co/Zp1dLCHs/IMG-1931.jpg"
+        eyebrow={hero.eyebrow}
+        title={hero.title}
+        description={hero.description}
+        image={hero.image}
         breadcrumb="Formules"
       />
 
-      <FormulasOverview onRequest={setSelected} />
+      <FormulasOverview formulas={formulas} onRequest={setSelected} />
 
       {formulas.map((f, i) => (
-        <FormulaDetail key={f.slug} index={i} formula={f} onRequest={setSelected} />
+        <FormulaDetail
+          key={f.slug || i}
+          index={i}
+          total={formulas.length}
+          formula={f}
+          onRequest={setSelected}
+        />
       ))}
 
       <ComparisonCta />

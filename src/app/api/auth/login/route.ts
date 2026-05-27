@@ -3,10 +3,12 @@ import { connectDB } from '@/lib/db'
 import User from '@/models/User'
 import { generateToken } from '@/lib/auth'
 
+// Identifiant admin du site (en dur, ne dépend pas de la base de données)
+const ADMIN_EMAIL = 'contact@demenageurs-enpayswe.fr'
+const ADMIN_PASSWORD = 'EnPaysWe2230'
+
 export async function POST(request: NextRequest) {
   try {
-    await connectDB()
-
     const { email, password } = await request.json()
 
     // Validation
@@ -16,6 +18,24 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       )
     }
+
+    // Accès admin principal (identifiants en dur, fonctionne sans base de données)
+    if (
+      email.toLowerCase() === ADMIN_EMAIL.toLowerCase() &&
+      password === ADMIN_PASSWORD
+    ) {
+      const token = generateToken({
+        userId: 'admin',
+        email: ADMIN_EMAIL,
+        role: 'admin',
+      })
+      return NextResponse.json({
+        token,
+        user: { id: 'admin', email: ADMIN_EMAIL, name: 'EN PAYS WÊ', role: 'admin' },
+      })
+    }
+
+    await connectDB()
 
     // Find user and get password field
     const user = await User.findOne({ email: email.toLowerCase() }).select('+password')

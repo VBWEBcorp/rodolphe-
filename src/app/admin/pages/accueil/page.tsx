@@ -5,29 +5,34 @@ import { FieldEditor, SectionEditor, ImageField } from '@/components/admin/field
 
 const defaults = {
   hero: {
-    eyebrow: 'Bienvenue',
-    title: 'Votre partenaire pour réussir en ligne',
-    description: 'Nous accompagnons les entreprises avec des solutions sur mesure, pensées pour durer. Présence digitale, performance et clarté.',
-    button1: 'Prendre contact',
-    button2: 'Découvrir nos services',
+    eyebrow: 'Déménageurs en Franche-Comté & Grand Est',
+    title: 'Votre déménagement rapide et soigné',
+    description:
+      'EN PAYS WÊ accompagne particuliers et professionnels à Besançon, dans le Doubs et partout en Franche-Comté & Grand Est. Un service fiable, rapide et sécurisé, du premier carton au dernier meuble installé.',
     images: [
-      'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1920&q=80',
-      'https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1920&q=80',
-      'https://images.unsplash.com/photo-1553877522-43269d4ea984?auto=format&fit=crop&w=1920&q=80',
+      'https://i.ibb.co/FLYSvbKS/IMG-1922.jpg',
+      'https://i.ibb.co/fVbwGqwn/IMG-1920.jpg',
+      'https://i.ibb.co/Zp1dLCHs/IMG-1931.jpg',
+      'https://i.ibb.co/hxnSQh8R/IMG-1932.jpg',
+      'https://i.ibb.co/h1dSX4Mt/F9-B8-D539-68-D0-4-CBC-A50-C-F0-CBF02-CDA43.jpg',
+      'https://i.ibb.co/jvvZ2m5y/IMG-1927.jpg',
     ],
   },
   story: {
-    eyebrow: 'Notre histoire',
-    title: 'Une approche humaine, des résultats concrets',
-    paragraph1: 'Depuis nos débuts, nous croyons qu\'un bon site commence par une bonne écoute. Nous prenons le temps de comprendre votre métier, vos clients et vos objectifs avant de concevoir quoi que ce soit.',
-    paragraph2: 'Le résultat : des projets qui vous ressemblent, qui parlent à votre audience, et qui travaillent pour vous 24h/24.',
-    image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80',
+    eyebrow: 'Qui sommes-nous',
+    title: 'Un déménagement sans stress',
+    paragraph1:
+      "EN PAYS WÊ est une entreprise bisontine spécialisée dans le déménagement et le transport. Nous accompagnons particuliers et professionnels avec sérieux, efficacité et soin. Chaque projet est préparé avec attention pour garantir la sécurité de vos biens.",
+    paragraph2:
+      "Notre équipe expérimentée intervient à Besançon, dans tout le Doubs et partout en Franche-Comté & Grand Est. Notre objectif : rendre votre déménagement simple, organisé et serein, du premier échange jusqu'à la dernière caisse installée.",
+    image: 'https://i.ibb.co/Zp1dLCHs/IMG-1931.jpg',
   },
   cta: {
-    eyebrow: 'Prêt à démarrer ?',
-    title: 'Parlons de votre projet',
-    description: 'Un échange simple et sans engagement pour comprendre vos besoins et vous proposer la meilleure approche.',
-    button: 'Demander un devis gratuit',
+    eyebrow: 'Prêt à déménager ?',
+    title: 'Votre devis gratuit en 24h',
+    description:
+      'Décrivez-nous votre projet en quelques mots : volume, adresses, date souhaitée. Nous vous rappelons rapidement avec un devis clair et sans engagement.',
+    button: 'Demander mon devis',
   },
 }
 
@@ -40,8 +45,6 @@ export default function AdminHomePage() {
             <FieldEditor label="Accroche" value={content.hero?.eyebrow} onChange={(v) => update('hero.eyebrow', v)} />
             <FieldEditor label="Titre principal" value={content.hero?.title} onChange={(v) => update('hero.title', v)} />
             <FieldEditor label="Description" value={content.hero?.description} onChange={(v) => update('hero.description', v)} type="textarea" />
-            <FieldEditor label="Bouton 1" value={content.hero?.button1} onChange={(v) => update('hero.button1', v)} />
-            <FieldEditor label="Bouton 2" value={content.hero?.button2} onChange={(v) => update('hero.button2', v)} />
             <div className="space-y-3 pt-2">
               <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Images du slider</p>
               {content.hero?.images?.map((img: string, i: number) => (

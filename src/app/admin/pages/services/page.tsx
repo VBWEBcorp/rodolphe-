@@ -7,20 +7,61 @@ import { Plus, Trash2 } from 'lucide-react'
 
 const defaults = {
   hero: {
-    eyebrow: 'Services',
-    title: 'Tout ce qu\'il faut pour réussir en ligne',
-    description: 'Des prestations complètes, de la conception à l\'accompagnement continu, adaptées à toutes les tailles d\'entreprise.',
-    image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1920&q=80',
+    eyebrow: 'Nos services',
+    title: 'Des prestations complètes, du carton au camion',
+    description:
+      "Particuliers ou professionnels, chaque déménagement est différent. Nous adaptons nos équipes, notre matériel et nos camions à votre besoin, pour un service fiable, rapide et soigné.",
+    image: 'https://i.ibb.co/Zp1dLCHs/IMG-1931.jpg',
   },
   services: [
-    { title: 'Création de site vitrine', description: 'Un site moderne, rapide et responsive qui présente clairement votre activité et inspire confiance à vos visiteurs.' },
-    { title: 'Application web', description: 'Outils métier, plateformes de réservation, espaces clients : des applications pensées pour simplifier votre quotidien.' },
-    { title: 'Référencement naturel (SEO)', description: 'Optimisation technique, contenu stratégique et suivi de positionnement pour gagner en visibilité sur Google.' },
-    { title: 'Identité visuelle', description: 'Logo, charte graphique, supports de communication : une image cohérente qui vous ressemble.' },
-    { title: 'Communication digitale', description: 'Stratégie de contenu, réseaux sociaux et campagnes pour développer votre audience en ligne.' },
-    { title: 'Développement sur mesure', description: 'Intégrations, automatisations, API : des solutions techniques taillées pour vos besoins spécifiques.' },
-    { title: 'Maintenance & sécurité', description: 'Mises à jour, sauvegardes, monitoring et corrections pour un site toujours performant et sécurisé.' },
-    { title: 'Analyse & reporting', description: 'Tableaux de bord clairs pour suivre vos performances, comprendre vos visiteurs et ajuster votre stratégie.' },
+    {
+      title: "Déménagement d'appartements & maisons",
+      description:
+        'Prise en charge complète : emballage, démontage, chargement, transport, remontage. Du studio au grand volume.',
+      points: ['Démontage & remontage inclus', 'Emballage sur demande', 'Toutes distances'],
+    },
+    {
+      title: 'Livraison de meubles & électroménager',
+      description:
+        "Livraison soignée à domicile, avec mise en place et installation si besoin. Courtes et longues distances.",
+      points: ['Mise en place à domicile', 'Étage & accès difficile', 'Rendez-vous sur créneau'],
+    },
+    {
+      title: 'Transport de marchandises',
+      description:
+        "Transport professionnel de marchandises, matériel ou objets volumineux, avec camion adapté au volume à déplacer.",
+      points: ['Véhicule adapté au volume', 'Courte et longue distance', 'Sanglage & calage pro'],
+    },
+    {
+      title: 'Transfert de bureaux & locaux pro',
+      description:
+        'Organisation complète : mobilier, matériel informatique, archives. Planning optimisé pour limiter les interruptions.',
+      points: ['Intervention weekend possible', 'Matériel informatique sécurisé', 'Plan de reprise rapide'],
+    },
+    {
+      title: "Vidage d'appartements & maisons",
+      description:
+        "Débarras complet avec tri, enlèvement et mise en déchèterie. Pratique pour successions, ventes ou travaux.",
+      points: ['Tri & évacuation', 'Mise en déchèterie', 'Logement rendu vide & propre'],
+    },
+    {
+      title: 'Vidage de caves & garages',
+      description:
+        "On débarrasse, charge et évacue en déchèterie tous les encombrants. Vous récupérez un espace propre et vide.",
+      points: ['Encombrants évacués', 'Tri sur place possible', 'Intervention rapide'],
+    },
+    {
+      title: 'Emballage & protection',
+      description:
+        "Cartons, scotch, papier bulle, housses : matériel adapté à vos objets fragiles. Emballage réalisé par nos équipes sur demande.",
+      points: ['Matériel fourni', 'Objets fragiles protégés', 'Prestation optionnelle'],
+    },
+    {
+      title: 'Monte-meubles & gros volumes',
+      description:
+        "Pour les étages difficiles d'accès ou les objets volumineux, nous mobilisons les équipements et équipes nécessaires.",
+      points: ['Monte-meubles', 'Gros électroménager', 'Pianos & coffres-forts'],
+    },
   ],
 }
 
@@ -61,13 +102,26 @@ export default function AdminServicesPage() {
                   newServices[i] = { ...newServices[i], description: v }
                   update('services', newServices)
                 }} type="textarea" />
+                <FieldEditor
+                  label="Points clés (un par ligne)"
+                  value={(svc.points || []).join('\n')}
+                  onChange={(v) => {
+                    const newServices = [...content.services]
+                    newServices[i] = {
+                      ...newServices[i],
+                      points: v.split('\n').map((p) => p.trim()).filter(Boolean),
+                    }
+                    update('services', newServices)
+                  }}
+                  type="textarea"
+                />
               </div>
             ))}
             <Button
               variant="outline"
               className="w-full gap-2"
               onClick={() => {
-                update('services', [...(content.services || []), { title: '', description: '' }])
+                update('services', [...(content.services || []), { title: '', description: '', points: [] }])
               }}
             >
               <Plus className="size-4" />
