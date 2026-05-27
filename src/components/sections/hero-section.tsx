@@ -97,7 +97,8 @@ function QuickQuoteCard() {
 export function HeroSection() {
   const { data } = useContent('home', { hero: defaults })
   const hero = data.hero ?? defaults
-  const images = hero.images ?? defaults.images
+  const cleaned = (hero.images ?? defaults.images).filter(Boolean)
+  const images = cleaned.length ? cleaned : defaults.images
   const [current, setCurrent] = useState(0)
 
   useEffect(() => {

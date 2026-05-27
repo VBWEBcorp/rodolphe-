@@ -20,6 +20,7 @@ const staticLinks: NavLink[] = [
   { to: '/a-propos', label: 'À propos' },
   { to: '/services', label: 'Services' },
   { to: '/formules', label: 'Formules' },
+  { to: '/gallery', label: 'Galerie' },
 ]
 
 export function Navbar() {

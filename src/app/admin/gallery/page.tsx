@@ -1,15 +1,22 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useRouter } from 'next/navigation'
-import { Trash2, Plus, Check, X, ArrowLeft } from 'lucide-react'
+import {
+  Trash2,
+  Eye,
+  EyeOff,
+  ArrowLeft,
+  Check,
+  ChevronDown,
+  Loader2,
+  ImagePlus,
+} from 'lucide-react'
 import Link from 'next/link'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { ImageField } from '@/components/admin/field-editor'
 
 interface GalleryImage {
@@ -31,348 +38,375 @@ interface GallerySettings {
 
 export default function AdminGalleryPage() {
   const router = useRouter()
-  const [settings, setSettings] = useState<GallerySettings>({ enabled: false, title: 'Nos réalisations', eyebrow: 'Galerie', description: 'Découvrez nos projets récents et laissez-vous inspirer par notre savoir-faire.', heroImage: '' })
+  const [settings, setSettings] = useState<GallerySettings>({
+    enabled: true,
+    title: 'Nos réalisations',
+    eyebrow: 'Galerie',
+    description: '',
+    heroImage: '',
+  })
   const [images, setImages] = useState<GalleryImage[]>([])
-  const [newImage, setNewImage] = useState({ title: '', description: '', imageUrl: '', category: '' })
-  const [editingId, setEditingId] = useState<string | null>(null)
+  const [newImage, setNewImage] = useState({ title: '', imageUrl: '' })
   const [loading, setLoading] = useState(true)
-  const [saving, setSaving] = useState(false)
+  const [adding, setAdding] = useState(false)
+  const [advancedOpen, setAdvancedOpen] = useState(false)
+  const [toast, setToast] = useState<{ msg: string; ok: boolean } | null>(null)
 
-  // Vérifier auth
+  const token = () => (typeof window !== 'undefined' ? localStorage.getItem('authToken') : null)
+
+  const notify = (msg: string, ok = true) => {
+    setToast({ msg, ok })
+    setTimeout(() => setToast(null), 2600)
+  }
+
   useEffect(() => {
     if (!localStorage.getItem('authToken')) {
       router.push('/admin/login')
     }
   }, [router])
 
-  // Charger les données
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const token = localStorage.getItem('authToken')
+        const t = token()
         const [settingsRes, imagesRes] = await Promise.all([
           fetch('/api/gallery/settings'),
           fetch('/api/gallery/images', {
-            headers: token ? { Authorization: `Bearer ${token}` } : {},
+            headers: t ? { Authorization: `Bearer ${t}` } : {},
           }),
         ])
-
-        const settingsData = await settingsRes.json()
-        const imagesData = await imagesRes.json()
-
-        setSettings(settingsData)
-        setImages(imagesData)
-      } catch (error) {
-        console.error('Failed to load gallery:', error)
+        setSettings(await settingsRes.json())
+        setImages(await imagesRes.json())
+      } catch {
+        notify('Impossible de charger la galerie', false)
       } finally {
         setLoading(false)
       }
     }
-
     fetchData()
   }, [])
 
-  const handleSaveSettings = async () => {
-    setSaving(true)
+  const saveSettings = async (next: GallerySettings, silent = false) => {
+    setSettings(next)
     try {
-      const token = localStorage.getItem('authToken')
-      const response = await fetch('/api/gallery/settings', {
+      const res = await fetch('/api/gallery/settings', {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify(settings),
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token()}` },
+        body: JSON.stringify(next),
       })
-
-      if (response.ok) {
-        alert('✅ Paramètres sauvegardés')
-      }
-    } catch (error) {
-      alert('❌ Erreur: ' + (error instanceof Error ? error.message : 'Erreur inconnue'))
-    } finally {
-      setSaving(false)
+      if (res.ok && !silent) notify('Enregistré ✓')
+    } catch {
+      notify('Erreur lors de l’enregistrement', false)
     }
   }
 
-  const handleAddImage = async () => {
-    if (!newImage.title || !newImage.imageUrl) {
-      alert('Remplissez au moins le titre et l\'URL')
+  const addImage = async () => {
+    if (!newImage.imageUrl) {
+      notify('Choisissez d’abord une photo', false)
       return
     }
-
-    setSaving(true)
+    setAdding(true)
     try {
-      const token = localStorage.getItem('authToken')
-      const response = await fetch('/api/gallery/images', {
+      const res = await fetch('/api/gallery/images', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify(newImage),
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token()}` },
+        body: JSON.stringify({
+          title: newImage.title.trim() || 'Photo',
+          imageUrl: newImage.imageUrl,
+        }),
       })
-
-      if (response.ok) {
-        const image = await response.json()
-        setImages([...images, image])
-        setNewImage({ title: '', description: '', imageUrl: '', category: '' })
-        alert('✅ Image ajoutée')
+      if (res.ok) {
+        const image = await res.json()
+        setImages((prev) => [...prev, image])
+        setNewImage({ title: '', imageUrl: '' })
+        notify('Photo ajoutée ✓')
+      } else {
+        notify('Erreur lors de l’ajout', false)
       }
-    } catch (error) {
-      alert('❌ Erreur: ' + (error instanceof Error ? error.message : 'Erreur inconnue'))
+    } catch {
+      notify('Erreur réseau', false)
     } finally {
-      setSaving(false)
+      setAdding(false)
     }
   }
 
-  const handleDeleteImage = async (id: string) => {
-    if (!confirm('Êtes-vous sûr?')) return
-
+  const deleteImage = async (id: string) => {
+    if (!confirm('Supprimer cette photo définitivement ?')) return
     try {
-      const token = localStorage.getItem('authToken')
-      const response = await fetch(`/api/gallery/images/${id}`, {
+      const res = await fetch(`/api/gallery/images/${id}`, {
         method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token()}` },
       })
-
-      if (response.ok) {
-        setImages(images.filter(img => img._id !== id))
-        alert('✅ Image supprimée')
+      if (res.ok) {
+        setImages((prev) => prev.filter((img) => img._id !== id))
+        notify('Photo supprimée')
       }
-    } catch (error) {
-      alert('❌ Erreur: ' + (error instanceof Error ? error.message : 'Erreur inconnue'))
+    } catch {
+      notify('Erreur lors de la suppression', false)
     }
   }
 
-  const handleToggleImage = async (id: string, active: boolean) => {
+  const toggleImage = async (img: GalleryImage) => {
+    const next = { ...img, active: !img.active }
+    setImages((prev) => prev.map((i) => (i._id === img._id ? next : i)))
     try {
-      const token = localStorage.getItem('authToken')
-      const image = images.find(img => img._id === id)
-      if (!image) return
-
-      const response = await fetch(`/api/gallery/images/${id}`, {
+      await fetch(`/api/gallery/images/${img._id}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({ ...image, active: !active }),
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token()}` },
+        body: JSON.stringify(next),
       })
+    } catch {
+      notify('Erreur', false)
+    }
+  }
 
-      if (response.ok) {
-        setImages(images.map(img =>
-          img._id === id ? { ...img, active: !active } : img
-        ))
-      }
-    } catch (error) {
-      alert('❌ Erreur')
+  const renameImage = async (img: GalleryImage) => {
+    try {
+      await fetch(`/api/gallery/images/${img._id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token()}` },
+        body: JSON.stringify(img),
+      })
+    } catch {
+      /* silencieux */
     }
   }
 
   if (loading) {
-    return <div className="p-6">Chargement...</div>
+    return (
+      <div className="flex items-center gap-2 p-8 text-muted-foreground">
+        <Loader2 className="size-4 animate-spin" /> Chargement…
+      </div>
+    )
   }
 
+  const visibleCount = images.filter((i) => i.active).length
+
   return (
-    <div className="p-4 sm:p-6 lg:p-8 space-y-6">
-      {/* Header */}
-      <div className="flex items-center gap-3 mb-2 pt-8 md:pt-0">
+    <div className="mx-auto max-w-4xl p-4 sm:p-6 lg:p-8 space-y-6">
+      {/* En-tête */}
+      <div className="flex items-center gap-3 pt-8 md:pt-0">
         <Link
           href="/admin/dashboard"
-          className="flex size-8 items-center justify-center rounded-lg text-muted-foreground hover:bg-card hover:text-foreground transition-colors"
+          className="flex size-9 items-center justify-center rounded-lg text-muted-foreground hover:bg-card hover:text-foreground transition-colors"
         >
           <ArrowLeft className="size-4" />
         </Link>
-        <h1 className="text-lg font-bold text-foreground">Galerie Photos</h1>
-      </div>
-      {/* Settings - Hero */}
-      <div className="rounded-xl bg-card border border-border/40 overflow-hidden max-w-2xl">
-        <div className="px-5 py-3 border-b border-border/40 bg-muted/30 flex items-center justify-between">
-          <h3 className="text-xs font-bold text-muted-foreground/60 uppercase tracking-widest">
-            Section d&apos;en-tête (Hero)
-          </h3>
-          <label className="flex items-center gap-2 cursor-pointer">
-            <div
-              className={`relative w-9 h-5 rounded-full transition-colors ${settings.enabled ? 'bg-primary' : 'bg-muted-foreground/30'}`}
-              onClick={() => {
-                const newSettings = { ...settings, enabled: !settings.enabled }
-                setSettings(newSettings)
-                const token = localStorage.getItem('authToken')
-                fetch('/api/gallery/settings', {
-                  method: 'PUT',
-                  headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-                  body: JSON.stringify(newSettings),
-                })
-              }}
-            >
-              <div className={`absolute top-0.5 left-0.5 size-4 rounded-full bg-white shadow transition-transform ${settings.enabled ? 'translate-x-4' : ''}`} />
-            </div>
-            <span className="text-xs text-muted-foreground">{settings.enabled ? 'Visible' : 'Masquée'}</span>
-          </label>
-        </div>
-        <div className="p-5 space-y-4">
-          <div className="space-y-1.5">
-            <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-              Petit texte au-dessus du titre
-            </Label>
-            <Input
-              value={settings.eyebrow || ''}
-              onChange={(e) => setSettings({ ...settings, eyebrow: e.target.value })}
-              placeholder="Galerie"
-            />
-          </div>
-
-          <div className="space-y-1.5">
-            <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-              Titre principal
-            </Label>
-            <Input
-              value={settings.title}
-              onChange={(e) => setSettings({ ...settings, title: e.target.value })}
-              placeholder="Nos réalisations"
-            />
-          </div>
-
-          <div className="space-y-1.5">
-            <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-              Description
-            </Label>
-            <textarea
-              value={settings.description || ''}
-              onChange={(e) => setSettings({ ...settings, description: e.target.value })}
-              placeholder="Découvrez nos projets récents et laissez-vous inspirer par notre savoir-faire."
-              rows={2}
-              className="w-full min-w-0 rounded-lg border border-input bg-transparent px-2.5 py-2 text-sm transition-colors outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 resize-y"
-            />
-          </div>
-
-          <ImageField
-            label="Image de fond du Hero"
-            value={settings.heroImage || ''}
-            onChange={(v) => setSettings({ ...settings, heroImage: v })}
-          />
-          <p className="text-[11px] text-muted-foreground/60 -mt-2">
-            Image affichée en arrière-plan de la section d&apos;en-tête. Laissez vide pour un fond uni.
+        <div>
+          <h1 className="text-xl font-bold text-foreground">Galerie photos</h1>
+          <p className="text-sm text-muted-foreground">
+            Ajoutez les photos de vos chantiers. Elles apparaissent sur la page « Galerie » du site.
           </p>
-
-          <Button
-            onClick={handleSaveSettings}
-            disabled={saving}
-            className="w-full gap-2"
-          >
-            <Check className="size-4" />
-            {saving ? 'Sauvegarde...' : 'Sauvegarder les paramètres'}
-          </Button>
         </div>
       </div>
 
-      {/* Add Image */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Plus className="size-4" />
-            Ajouter une image
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="title">Titre</Label>
-            <Input
-              id="title"
-              value={newImage.title}
-              onChange={(e) => setNewImage({ ...newImage, title: e.target.value })}
-              placeholder="Titre de l'image"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
-            <Input
-              id="description"
-              value={newImage.description}
-              onChange={(e) => setNewImage({ ...newImage, description: e.target.value })}
-              placeholder="Description optionnelle"
-            />
-          </div>
-
-          <ImageField
-            label="Image (upload ou lien)"
-            value={newImage.imageUrl}
-            onChange={(v) => setNewImage({ ...newImage, imageUrl: v })}
+      {/* Visible sur le site ? */}
+      <div className="flex items-center justify-between gap-4 rounded-2xl border border-border/50 bg-card p-5">
+        <div>
+          <p className="font-semibold text-foreground">Afficher la galerie sur le site</p>
+          <p className="text-sm text-muted-foreground">
+            {settings.enabled
+              ? 'La page Galerie est visible par vos visiteurs.'
+              : 'La page Galerie est masquée pour le moment.'}
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={() => saveSettings({ ...settings, enabled: !settings.enabled })}
+          className={`relative h-7 w-12 shrink-0 rounded-full transition-colors ${
+            settings.enabled ? 'bg-primary' : 'bg-muted-foreground/30'
+          }`}
+          aria-label="Afficher la galerie"
+        >
+          <span
+            className={`absolute top-1 left-1 size-5 rounded-full bg-white shadow transition-transform ${
+              settings.enabled ? 'translate-x-5' : ''
+            }`}
           />
+        </button>
+      </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="category">Catégorie</Label>
-            <Input
-              id="category"
-              value={newImage.category}
-              onChange={(e) => setNewImage({ ...newImage, category: e.target.value })}
-              placeholder="Ex: paysage, portrait..."
-            />
+      {/* Ajouter une photo */}
+      <div className="rounded-2xl border border-primary/20 bg-primary/[0.03] p-5 space-y-4">
+        <div className="flex items-center gap-2">
+          <div className="flex size-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
+            <ImagePlus className="size-5" />
           </div>
+          <div>
+            <p className="font-semibold text-foreground">Ajouter une photo</p>
+            <p className="text-sm text-muted-foreground">
+              Glissez une image depuis votre ordinateur, ou collez un lien.
+            </p>
+          </div>
+        </div>
 
-          <Button
-            onClick={handleAddImage}
-            disabled={saving}
-            className="w-full"
-          >
-            {saving ? 'Ajout...' : 'Ajouter l\'image'}
-          </Button>
-        </CardContent>
-      </Card>
+        <ImageField
+          label="Photo"
+          value={newImage.imageUrl}
+          onChange={(v) => setNewImage((p) => ({ ...p, imageUrl: v }))}
+        />
 
-      {/* Images List */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Images ({images.length})</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {images.length > 0 ? (
-            <div className="space-y-3">
-              {images.map((image) => (
-                <motion.div
-                  key={image._id}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="flex items-center justify-between p-4 rounded-lg border border-border/50 hover:bg-muted/50 transition"
-                >
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium text-foreground truncate">{image.title}</p>
-                    <p className="text-sm text-muted-foreground truncate">{image.imageUrl}</p>
-                    {image.category && (
-                      <p className="text-xs text-primary mt-1">{image.category}</p>
-                    )}
-                  </div>
-                  <div className="flex items-center gap-2 ml-4">
-                    <Button
-                      size="icon-sm"
-                      variant="ghost"
-                      onClick={() => handleToggleImage(image._id, image.active)}
-                      title={image.active ? 'Désactiver' : 'Activer'}
-                    >
-                      {image.active ? (
-                        <Check className="size-4 text-primary" />
-                      ) : (
-                        <X className="size-4 text-muted-foreground" />
-                      )}
-                    </Button>
-                    <Button
-                      size="icon-sm"
-                      variant="ghost"
-                      onClick={() => handleDeleteImage(image._id)}
-                    >
-                      <Trash2 className="size-4 text-destructive" />
-                    </Button>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-center text-muted-foreground py-8">Aucune image</p>
+        <div className="space-y-1.5">
+          <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            Nom de la photo (facultatif)
+          </label>
+          <Input
+            value={newImage.title}
+            onChange={(e) => setNewImage((p) => ({ ...p, title: e.target.value }))}
+            placeholder="Ex : Déménagement à Besançon"
+          />
+        </div>
+
+        <Button onClick={addImage} disabled={adding || !newImage.imageUrl} className="w-full gap-2" size="lg">
+          {adding ? <Loader2 className="size-4 animate-spin" /> : <ImagePlus className="size-4" />}
+          {adding ? 'Ajout…' : 'Ajouter à la galerie'}
+        </Button>
+      </div>
+
+      {/* Photos */}
+      <div>
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="font-semibold text-foreground">
+            Mes photos <span className="text-muted-foreground font-normal">({images.length})</span>
+          </h2>
+          {images.length > 0 && (
+            <span className="text-xs text-muted-foreground">{visibleCount} visible(s) sur le site</span>
           )}
-        </CardContent>
-      </Card>
+        </div>
+
+        {images.length === 0 ? (
+          <div className="rounded-2xl border border-dashed border-border/60 p-10 text-center text-muted-foreground">
+            Aucune photo pour l’instant. Ajoutez-en une ci-dessus 👆
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+            {images.map((img) => (
+              <motion.div
+                key={img._id}
+                layout
+                initial={{ opacity: 0, scale: 0.96 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className={`group overflow-hidden rounded-xl border bg-card transition-all ${
+                  img.active ? 'border-border/50' : 'border-border/40 opacity-60'
+                }`}
+              >
+                <div className="relative aspect-[4/3] overflow-hidden bg-muted">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={img.imageUrl} alt={img.title} className="size-full object-cover" />
+                  {!img.active && (
+                    <span className="absolute left-2 top-2 rounded-full bg-black/70 px-2 py-0.5 text-[10px] font-semibold text-white">
+                      Masquée
+                    </span>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => deleteImage(img._id)}
+                    title="Supprimer"
+                    className="absolute right-2 top-2 flex size-7 items-center justify-center rounded-lg bg-black/55 text-white opacity-0 transition-opacity hover:bg-red-600 group-hover:opacity-100"
+                  >
+                    <Trash2 className="size-3.5" />
+                  </button>
+                </div>
+                <div className="space-y-2 p-2.5">
+                  <input
+                    value={img.title}
+                    onChange={(e) =>
+                      setImages((prev) =>
+                        prev.map((i) => (i._id === img._id ? { ...i, title: e.target.value } : i))
+                      )
+                    }
+                    onBlur={() => renameImage(img)}
+                    className="w-full rounded-md border border-transparent bg-transparent px-1.5 py-1 text-sm font-medium text-foreground outline-none transition-colors hover:border-border/60 focus:border-ring focus:bg-background"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => toggleImage(img)}
+                    className={`flex w-full items-center justify-center gap-1.5 rounded-lg py-1.5 text-xs font-medium transition-colors ${
+                      img.active
+                        ? 'bg-muted/60 text-foreground hover:bg-muted'
+                        : 'bg-primary/10 text-primary hover:bg-primary/15'
+                    }`}
+                  >
+                    {img.active ? <EyeOff className="size-3.5" /> : <Eye className="size-3.5" />}
+                    {img.active ? 'Masquer' : 'Afficher'}
+                  </button>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Réglages avancés (facultatif) */}
+      <div className="rounded-2xl border border-border/50 bg-card overflow-hidden">
+        <button
+          type="button"
+          onClick={() => setAdvancedOpen((o) => !o)}
+          className="flex w-full items-center justify-between px-5 py-4 text-left"
+        >
+          <div>
+            <p className="font-semibold text-foreground">Textes de la page Galerie</p>
+            <p className="text-sm text-muted-foreground">Titre et introduction affichés en haut de la page (facultatif).</p>
+          </div>
+          <ChevronDown className={`size-5 text-muted-foreground transition-transform ${advancedOpen ? 'rotate-180' : ''}`} />
+        </button>
+        <AnimatePresence initial={false}>
+          {advancedOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="overflow-hidden"
+            >
+              <div className="space-y-4 border-t border-border/40 p-5">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Titre de la page</label>
+                  <Input
+                    value={settings.title}
+                    onChange={(e) => setSettings({ ...settings, title: e.target.value })}
+                    placeholder="Nos réalisations"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Texte d’introduction</label>
+                  <textarea
+                    value={settings.description || ''}
+                    onChange={(e) => setSettings({ ...settings, description: e.target.value })}
+                    rows={2}
+                    placeholder="Quelques mots pour présenter vos photos…"
+                    className="w-full resize-y rounded-lg border border-input bg-transparent px-2.5 py-2 text-sm outline-none transition-colors placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+                  />
+                </div>
+                <ImageField
+                  label="Image de fond (en haut de la page)"
+                  value={settings.heroImage || ''}
+                  onChange={(v) => setSettings({ ...settings, heroImage: v })}
+                />
+                <Button onClick={() => saveSettings(settings)} className="gap-2">
+                  <Check className="size-4" />
+                  Enregistrer les textes
+                </Button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* Toast */}
+      <AnimatePresence>
+        {toast && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            className={`fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-full px-5 py-2.5 text-sm font-medium text-white shadow-lg ${
+              toast.ok ? 'bg-emerald-600' : 'bg-red-600'
+            }`}
+          >
+            {toast.msg}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }

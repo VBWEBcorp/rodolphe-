@@ -29,7 +29,8 @@ const CARD_WIDTH = 340
 export function GalleryCarousel() {
   const { data } = useContent('home', { gallery: defaults })
   const gallery = data.gallery ?? defaults
-  const images = gallery.images ?? defaultImages
+  const cleaned = (gallery.images ?? defaultImages).filter(Boolean)
+  const images = cleaned.length ? cleaned : defaultImages
 
   const trackRef = useRef<HTMLDivElement>(null)
   const [maxScroll, setMaxScroll] = useState(0)
