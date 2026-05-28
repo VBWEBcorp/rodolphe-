@@ -75,8 +75,13 @@ export default function AdminGalleryPage() {
             headers: t ? { Authorization: `Bearer ${t}` } : {},
           }),
         ])
-        setSettings(await settingsRes.json())
-        setImages(await imagesRes.json())
+        const settingsData = await settingsRes.json()
+        const imagesData = await imagesRes.json()
+        if (settingsData && typeof settingsData === 'object' && !settingsData.error) {
+          setSettings(settingsData)
+        }
+        setImages(Array.isArray(imagesData) ? imagesData : [])
+        if (!Array.isArray(imagesData)) notify('Impossible de charger les photos', false)
       } catch {
         notify('Impossible de charger la galerie', false)
       } finally {

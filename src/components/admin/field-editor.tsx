@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { compressImage } from '@/lib/compress-image'
 
 interface FieldEditorProps {
   label: string
@@ -78,8 +79,9 @@ export function ImageField({ label, value, onChange }: ImageFieldProps) {
     setUploading(true)
     try {
       const token = localStorage.getItem('authToken')
+      const compressed = await compressImage(file)
       const formData = new FormData()
-      formData.append('file', file)
+      formData.append('file', compressed)
 
       const response = await fetch('/api/upload', {
         method: 'POST',
@@ -88,8 +90,11 @@ export function ImageField({ label, value, onChange }: ImageFieldProps) {
       })
 
       if (!response.ok) {
-        const data = await response.json()
-        alert(data.error || 'Erreur upload')
+        const message = await response
+          .json()
+          .then((d) => d.error)
+          .catch(() => `Erreur serveur (${response.status})`)
+        alert(message || 'Erreur upload')
         return
       }
 
