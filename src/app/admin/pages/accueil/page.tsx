@@ -3,7 +3,7 @@
 import { PageEditor } from '@/components/admin/page-editor'
 import { FieldEditor, SectionEditor, ImageField } from '@/components/admin/field-editor'
 import { Button } from '@/components/ui/button'
-import { Plus } from 'lucide-react'
+import { ChevronDown, ChevronUp, Plus, Trash2 } from 'lucide-react'
 
 const defaults = {
   hero: {
@@ -51,7 +51,11 @@ const defaults = {
   },
 }
 
-/** Liste de photos avec ajout/suppression (la croix sur une photo la retire). */
+/**
+ * Liste de photos avec ajout / suppression / réordonnancement.
+ * L'ordre dans la liste = l'ordre dans le carrousel (1ʳᵉ photo de la liste
+ * = 1ʳᵉ affichée).
+ */
 function ImageListEditor({
   images,
   onChange,
@@ -59,21 +63,78 @@ function ImageListEditor({
   images: string[]
   onChange: (images: string[]) => void
 }) {
+  const move = (i: number, dir: -1 | 1) => {
+    const j = i + dir
+    if (j < 0 || j >= images.length) return
+    const next = [...images]
+    ;[next[i], next[j]] = [next[j], next[i]]
+    onChange(next)
+  }
+  const removeAt = (i: number) => {
+    const next = [...images]
+    next.splice(i, 1)
+    onChange(next)
+  }
+
   return (
     <div className="space-y-3">
-      {images.map((img, i) => (
-        <ImageField
-          key={i}
-          label={`Photo ${i + 1}`}
-          value={img}
-          onChange={(v) => {
-            const next = [...images]
-            if (v) next[i] = v
-            else next.splice(i, 1)
-            onChange(next)
-          }}
-        />
-      ))}
+      <p className="text-xs text-muted-foreground">
+        L&apos;ordre des photos ici détermine l&apos;ordre dans le carrousel. Utilisez les flèches pour déplacer.
+      </p>
+      {images.map((img, i) => {
+        const isFirst = i === 0
+        const isLast = i === images.length - 1
+        return (
+          <div key={i} className="space-y-2 rounded-lg border border-border/40 bg-muted/20 p-3">
+            <div className="flex items-center justify-between gap-2">
+              <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary">
+                {isFirst ? `Photo ${i + 1} · 1ʳᵉ` : isLast && images.length > 1 ? `Photo ${i + 1} · dernière` : `Photo ${i + 1}`}
+              </span>
+              <div className="flex items-center gap-1">
+                <button
+                  type="button"
+                  onClick={() => move(i, -1)}
+                  disabled={isFirst}
+                  title="Déplacer vers le haut"
+                  aria-label="Déplacer vers le haut"
+                  className="flex size-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-card hover:text-foreground disabled:pointer-events-none disabled:opacity-30"
+                >
+                  <ChevronUp className="size-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => move(i, 1)}
+                  disabled={isLast}
+                  title="Déplacer vers le bas"
+                  aria-label="Déplacer vers le bas"
+                  className="flex size-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-card hover:text-foreground disabled:pointer-events-none disabled:opacity-30"
+                >
+                  <ChevronDown className="size-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => removeAt(i)}
+                  title="Supprimer cette photo"
+                  aria-label="Supprimer cette photo"
+                  className="flex size-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
+                >
+                  <Trash2 className="size-4" />
+                </button>
+              </div>
+            </div>
+            <ImageField
+              label=""
+              value={img}
+              onChange={(v) => {
+                const next = [...images]
+                if (v) next[i] = v
+                else next.splice(i, 1)
+                onChange(next)
+              }}
+            />
+          </div>
+        )
+      })}
       <Button
         variant="outline"
         size="sm"

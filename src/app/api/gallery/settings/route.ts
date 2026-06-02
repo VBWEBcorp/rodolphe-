@@ -3,6 +3,13 @@ import { connectDB } from '@/lib/db'
 import { GallerySettings } from '@/models/Gallery'
 import { verifyAuth } from '@/lib/auth'
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
+const NO_CACHE = {
+  'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
+}
+
 const defaultSettings = {
   enabled: true,
   eyebrow: 'Galerie',
@@ -22,10 +29,10 @@ export async function GET() {
       settings = await GallerySettings.create(defaultSettings)
     }
 
-    return NextResponse.json(settings)
+    return NextResponse.json(settings, { headers: NO_CACHE })
   } catch (error) {
     console.error('Gallery settings error:', error)
-    return NextResponse.json(defaultSettings)
+    return NextResponse.json(defaultSettings, { headers: NO_CACHE })
   }
 }
 

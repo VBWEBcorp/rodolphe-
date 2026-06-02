@@ -3,6 +3,13 @@ import { connectDB } from '@/lib/db'
 import { GalleryImage } from '@/models/Gallery'
 import { verifyAuth } from '@/lib/auth'
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
+const NO_CACHE = {
+  'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
+}
+
 // Photos par défaut, insérées en base au premier chargement si la galerie est vide.
 const defaultImages = [
   {
@@ -74,7 +81,7 @@ export async function GET(request: NextRequest) {
       createdAt: 1,
     })
 
-    return NextResponse.json(images)
+    return NextResponse.json(images, { headers: NO_CACHE })
   } catch (error) {
     console.error('Gallery list error:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
