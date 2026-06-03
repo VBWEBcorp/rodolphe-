@@ -13,6 +13,20 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    // En PROD on exige R2 : sans lui, l'URL retournee (`/uploads/...`) ne
+    // pointerait vers rien sur Netlify (filesystem non persistant) et casserait
+    // l'image. En DEV on autorise le fallback local pour que les tests
+    // fonctionnent meme sans R2 configure en .env.local.
+    if (!r2Enabled && process.env.NODE_ENV === 'production') {
+      return NextResponse.json(
+        {
+          error:
+            "Stockage des images non configuré côté serveur (R2 manquant). Utilisez l'option « Lien » à la place.",
+        },
+        { status: 503 }
+      )
+    }
+
     const formData = await request.formData()
     const file = formData.get('file') as File | null
 
@@ -56,10 +70,9 @@ export async function POST(request: NextRequest) {
     let url: string
 
     if (r2Enabled) {
-      // Upload vers Cloudflare R2
       url = await uploadToR2(finalBuffer, filename, contentType)
     } else {
-      // Fallback: stockage local
+      // DEV uniquement (le bloc plus haut interdit ce chemin en prod).
       const uploadsDir = path.join(process.cwd(), 'public', 'uploads')
       if (!existsSync(uploadsDir)) {
         await mkdir(uploadsDir, { recursive: true })
@@ -77,7 +90,7 @@ export async function POST(request: NextRequest) {
       filename,
       originalSize: `${originalSize} Ko`,
       optimizedSize: `${optimizedSize} Ko`,
-      storage: r2Enabled ? 'cloudflare-r2' : 'local',
+      storage: r2Enabled ? 'cloudflare-r2' : 'local-dev',
     })
   } catch (error) {
     console.error('Upload error:', error)

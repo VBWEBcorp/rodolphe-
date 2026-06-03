@@ -7,20 +7,13 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { useContent } from '@/hooks/use-content'
 
-const defaultImages = [
-  'https://i.ibb.co/FLYSvbKS/IMG-1922.jpg',
-  'https://i.ibb.co/fVbwGqwn/IMG-1920.jpg',
-  'https://i.ibb.co/Zp1dLCHs/IMG-1931.jpg',
-  'https://i.ibb.co/hxnSQh8R/IMG-1932.jpg',
-  'https://i.ibb.co/BVCwHC4B/D7-E6-C8-D2-A508-4606-9-ABB-D15-ACD22711-E.png',
-  'https://i.ibb.co/h1dSX4Mt/F9-B8-D539-68-D0-4-CBC-A50-C-F0-CBF02-CDA43.jpg',
-  'https://i.ibb.co/jvvZ2m5y/IMG-1927.jpg',
-]
-
-const defaults = {
+// Aucune photo par défaut : seules les photos saisies dans l'admin sont affichées.
+// Si l'admin n'a rien renseigné, la section entière est masquée (return null
+// plus bas), pour ne pas afficher de placeholders fournis par le code.
+const defaults: { eyebrow: string; title: string; images: string[] } = {
   eyebrow: 'Galerie',
   title: 'Nos équipes sur le terrain',
-  images: defaultImages,
+  images: [],
 }
 
 const GAP = 20
@@ -29,8 +22,7 @@ const CARD_WIDTH = 340
 export function GalleryCarousel() {
   const { data } = useContent('home', { gallery: defaults })
   const gallery = data.gallery ?? defaults
-  const cleaned = (gallery.images ?? defaultImages).filter(Boolean)
-  const images = cleaned.length ? cleaned : defaultImages
+  const images = (gallery.images ?? []).filter(Boolean)
 
   const trackRef = useRef<HTMLDivElement>(null)
   const [maxScroll, setMaxScroll] = useState(0)
@@ -56,6 +48,10 @@ export function GalleryCarousel() {
     },
     [x, maxScroll]
   )
+
+  // Pas de photos saisies par le client → on masque entierement la section,
+  // plutot que d'afficher un en-tete avec un carrousel vide.
+  if (images.length === 0) return null
 
   return (
     <section className="border-b border-border/60">

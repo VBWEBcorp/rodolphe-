@@ -73,10 +73,13 @@ export function ImageField({ label, value, onChange }: ImageFieldProps) {
   const [uploading, setUploading] = useState(false)
   const [dragOver, setDragOver] = useState(false)
   const [uploadInfo, setUploadInfo] = useState<string | null>(null)
+  const [uploadError, setUploadError] = useState<string | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
   const handleUpload = async (file: File) => {
     setUploading(true)
+    setUploadError(null)
+    setUploadInfo(null)
     try {
       const token = localStorage.getItem('authToken')
       const compressed = await compressImage(file)
@@ -94,7 +97,7 @@ export function ImageField({ label, value, onChange }: ImageFieldProps) {
           .json()
           .then((d) => d.error)
           .catch(() => `Erreur serveur (${response.status})`)
-        alert(message || 'Erreur upload')
+        setUploadError(message || `Échec de l'upload (code ${response.status})`)
         return
       }
 
@@ -102,7 +105,7 @@ export function ImageField({ label, value, onChange }: ImageFieldProps) {
       onChange(data.url)
       setUploadInfo(`${data.originalSize} → ${data.optimizedSize} (${data.storage})`)
     } catch (error) {
-      alert('Erreur lors de l\'upload')
+      setUploadError("Erreur réseau pendant l'upload. Vérifiez votre connexion et réessayez.")
     } finally {
       setUploading(false)
     }
@@ -204,6 +207,12 @@ export function ImageField({ label, value, onChange }: ImageFieldProps) {
               </>
             )}
           </div>
+          {uploadError && (
+            <div className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs text-destructive">
+              <p className="font-semibold">L&apos;upload a échoué</p>
+              <p className="mt-0.5">{uploadError}</p>
+            </div>
+          )}
         </>
       )}
 
