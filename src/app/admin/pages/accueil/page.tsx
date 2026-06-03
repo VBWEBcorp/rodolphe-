@@ -44,7 +44,6 @@ const defaults = {
   gallery: {
     eyebrow: 'Galerie',
     title: 'Nos équipes sur le terrain',
-    images: [] as string[],
   },
   cta: {
     eyebrow: 'Prêt à déménager ?',
@@ -308,14 +307,22 @@ export default function AdminHomePage() {
           <SectionEditor title="Carrousel photos (bande qui défile)">
             <FieldEditor label="Petit texte au-dessus" value={content.gallery?.eyebrow} onChange={(v) => update('gallery.eyebrow', v)} />
             <FieldEditor label="Titre" value={content.gallery?.title} onChange={(v) => update('gallery.title', v)} />
-            <div className="space-y-3 pt-2">
-              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                Photos du carrousel
+            <div className="rounded-lg border border-primary/20 bg-primary/[0.04] p-4">
+              <p className="text-sm font-semibold text-foreground">
+                📷 Les photos viennent de la Galerie
               </p>
-              <ImageListEditor
-                images={content.gallery?.images || []}
-                onChange={(imgs) => update('gallery.images', imgs)}
-              />
+              <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                Toutes les photos que vous ajoutez dans la section
+                {' '}<strong>Galerie</strong>{' '}(menu de gauche) défilent
+                automatiquement ici. Vous n&apos;avez qu&apos;un seul endroit
+                où gérer vos photos.
+              </p>
+              <a
+                href="/admin/gallery"
+                className="mt-2 inline-block text-sm font-semibold text-primary underline-offset-4 hover:underline"
+              >
+                Ouvrir la Galerie →
+              </a>
             </div>
           </SectionEditor>
 

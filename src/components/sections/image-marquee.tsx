@@ -1,16 +1,48 @@
 'use client'
 
-const IMAGES = [
-  'https://i.ibb.co/FLYSvbKS/IMG-1922.jpg',
-  'https://i.ibb.co/fVbwGqwn/IMG-1920.jpg',
-  'https://i.ibb.co/Zp1dLCHs/IMG-1931.jpg',
-  'https://i.ibb.co/hxnSQh8R/IMG-1932.jpg',
-  'https://i.ibb.co/h1dSX4Mt/F9-B8-D539-68-D0-4-CBC-A50-C-F0-CBF02-CDA43.jpg',
-  'https://i.ibb.co/jvvZ2m5y/IMG-1927.jpg',
-]
+import { useEffect, useState } from 'react'
+
+// Bande d'images qui defile automatiquement en boucle, sous le hero.
+// Les photos viennent de la Galerie partagee (/api/gallery/images), comme
+// la GalleryCarousel — UN SEUL endroit dans l'admin pour gerer les photos.
+
+interface GalleryImageDoc {
+  imageUrl: string
+  active?: boolean
+}
 
 export function ImageMarquee() {
-  const loop = [...IMAGES, ...IMAGES, ...IMAGES]
+  const [images, setImages] = useState<string[]>([])
+
+  useEffect(() => {
+    let cancelled = false
+    fetch('/api/gallery/images', { cache: 'no-store' })
+      .then((r) => (r.ok ? r.json() : []))
+      .then((arr: unknown) => {
+        if (cancelled || !Array.isArray(arr)) return
+        const urls = (arr as GalleryImageDoc[])
+          .filter((img) => img && img.active !== false && img.imageUrl)
+          .map((img) => img.imageUrl)
+        setImages(urls)
+      })
+      .catch(() => {
+        /* silencieux : la section sera juste masquee si rien ne charge */
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  // Aucune photo dans la Galerie : on masque la bande, plutot que d'afficher du
+  // vide ou des placeholders en dur.
+  if (images.length === 0) return null
+
+  const loop = [...images, ...images, ...images]
+  // Le keyframe `marquee-left` translate la bande de 0 a -100%. Pour garder la
+  // meme vitesse PERCUE quel que soit le nombre de photos (sinon plus il y en a,
+  // plus ca defile vite), on fixe ~10 secondes par photo — ce qui correspond a
+  // l'ancien tempo de reference (60s pour 6 photos).
+  const animationDuration = `${Math.max(60, images.length * 10)}s`
 
   return (
     <section
@@ -27,13 +59,14 @@ export function ImageMarquee() {
       <div className="group flex">
         <div
           className="flex shrink-0 gap-3 py-4 animate-marquee-left sm:gap-5 sm:py-5 lg:gap-6"
-          style={{ animationDuration: '60s' }}
+          style={{ animationDuration }}
         >
           {loop.map((src, i) => (
             <div
               key={`a-${i}`}
               className="relative h-40 w-60 shrink-0 overflow-hidden rounded-2xl ring-1 ring-border/60 shadow-[var(--shadow-sm)] sm:h-48 sm:w-72 lg:h-56 lg:w-80"
             >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={src}
                 alt=""
@@ -46,13 +79,14 @@ export function ImageMarquee() {
         <div
           aria-hidden
           className="flex shrink-0 gap-3 py-4 animate-marquee-left sm:gap-5 sm:py-5 lg:gap-6"
-          style={{ animationDuration: '60s' }}
+          style={{ animationDuration }}
         >
           {loop.map((src, i) => (
             <div
               key={`b-${i}`}
               className="relative h-40 w-60 shrink-0 overflow-hidden rounded-2xl ring-1 ring-border/60 shadow-[var(--shadow-sm)] sm:h-48 sm:w-72 lg:h-56 lg:w-80"
             >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={src}
                 alt=""

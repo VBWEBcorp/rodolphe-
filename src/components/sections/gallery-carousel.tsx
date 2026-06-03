@@ -7,28 +7,54 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { useContent } from '@/hooks/use-content'
 
-// Aucune photo par défaut : seules les photos saisies dans l'admin sont affichées.
-// Si l'admin n'a rien renseigné, la section entière est masquée (return null
-// plus bas), pour ne pas afficher de placeholders fournis par le code.
-const defaults: { eyebrow: string; title: string; images: string[] } = {
+// L'eyebrow et le titre sont pilotés via l'admin Accueil (content "home").
+// Les PHOTOS elles-mêmes viennent de la Galerie partagée (/api/gallery/images)
+// pour que le client n'ait qu'UN seul endroit où gérer ses photos. Toutes les
+// photos actives de la Galerie défilent automatiquement ici.
+const defaults: { eyebrow: string; title: string } = {
   eyebrow: 'Galerie',
   title: 'Nos équipes sur le terrain',
-  images: [],
 }
 
 const GAP = 20
 const CARD_WIDTH = 340
 
+interface GalleryImageDoc {
+  imageUrl: string
+  active?: boolean
+}
+
 export function GalleryCarousel() {
   const { data } = useContent('home', { gallery: defaults })
   const gallery = data.gallery ?? defaults
-  const images = (gallery.images ?? []).filter(Boolean)
+
+  // Photos chargées depuis la Galerie (API partagée avec /admin/gallery).
+  const [images, setImages] = useState<string[]>([])
+  useEffect(() => {
+    let cancelled = false
+    fetch('/api/gallery/images', { cache: 'no-store' })
+      .then((r) => (r.ok ? r.json() : []))
+      .then((arr: unknown) => {
+        if (cancelled || !Array.isArray(arr)) return
+        const urls = (arr as GalleryImageDoc[])
+          .filter((img) => img && img.active !== false && img.imageUrl)
+          .map((img) => img.imageUrl)
+        setImages(urls)
+      })
+      .catch(() => {
+        /* silencieux : la section sera juste masquée */
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   const trackRef = useRef<HTMLDivElement>(null)
   const [maxScroll, setMaxScroll] = useState(0)
   const x = useMotionValue(0)
   const progress = useTransform(x, [0, -maxScroll || -1], [0, 1])
 
+  // Remesure quand les images arrivent (changement de scrollWidth).
   useEffect(() => {
     function measure() {
       if (!trackRef.current) return
@@ -37,7 +63,7 @@ export function GalleryCarousel() {
     measure()
     window.addEventListener('resize', measure)
     return () => window.removeEventListener('resize', measure)
-  }, [])
+  }, [images.length])
 
   const slide = useCallback(
     (dir: -1 | 1) => {
