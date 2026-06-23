@@ -19,6 +19,18 @@ const legalLinks = [
   { label: 'Cookies', to: '/politique-cookies' },
 ]
 
+// Pages SEO locales (maillage interne — sert au ranking sur les mots-cles
+// "demenagement Besancon", "entreprise de demenagement Besancon", etc.).
+const seoLinks = [
+  { label: 'Déménagement à Besançon', to: '/demenagement-besancon' },
+  { label: 'Entreprise de déménagement à Besançon', to: '/entreprise-demenagement-besancon' },
+  { label: 'Société de déménagement à Besançon', to: '/societe-demenagement-besancon' },
+  { label: 'Déménageur à Besançon', to: '/demenageur-besancon' },
+  { label: 'Déménagement pas cher à Besançon', to: '/demenagement-pas-cher-besancon' },
+  { label: 'Déménagement de bureaux à Besançon', to: '/demenagement-bureaux-besancon' },
+  { label: 'Déménagement particulier à Besançon', to: '/demenagement-particulier-besancon' },
+]
+
 export function Footer() {
   return (
     <footer className="relative overflow-hidden bg-zinc-950 text-white">
@@ -32,7 +44,7 @@ export function Footer() {
       />
 
       <div className="relative mx-auto max-w-6xl px-4 pt-14 pb-8 sm:px-6 sm:pt-16 lg:px-8">
-        <div className="grid gap-10 sm:gap-12 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
+        <div className="grid gap-10 sm:gap-12 lg:grid-cols-[1.3fr_1.2fr_1fr_1fr]">
           {/* Brand + contact */}
           <div className="space-y-5 lg:col-span-1">
             <Logo variant="dark" className="-ml-1" />
@@ -112,8 +124,27 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Navigation + Légal en grille 2 colonnes sur mobile/tablette */}
-          <div className="grid grid-cols-2 gap-8 sm:gap-10 lg:col-span-2 lg:grid-cols-2">
+          {/* Pages SEO Déménagement Besançon (maillage interne) */}
+          <nav aria-label="Déménagement à Besançon" className="lg:col-span-1">
+            <h3 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-zinc-500">
+              Déménagement à Besançon
+            </h3>
+            <ul className="mt-5 space-y-2.5">
+              {seoLinks.map((l) => (
+                <li key={l.label}>
+                  <Link
+                    href={l.to}
+                    className="text-[13px] leading-snug text-zinc-400 transition-colors hover:text-white"
+                  >
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          {/* Navigation + Légal */}
+          <div className="grid grid-cols-2 gap-8 sm:gap-10 lg:col-span-1 lg:grid-cols-1 lg:gap-6">
             <nav aria-label="Navigation">
               <h3 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-zinc-500">
                 Navigation

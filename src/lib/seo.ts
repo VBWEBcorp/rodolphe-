@@ -3,7 +3,7 @@ export const siteConfig = {
   url: 'https://demenageurs-en-pays-we.fr',
   locale: 'fr_FR',
   description:
-    'Déménagement et transport à Besançon, dans le Doubs et partout en Franche-Comté & Grand Est. Particuliers et professionnels : des prestations sérieuses, rapides et soignées.',
+    'Entreprise de déménagement à Besançon : EN PAYS WÊ accompagne particuliers et professionnels dans le Doubs et partout en Franche-Comté & Grand Est. Déménageurs sérieux, rapides et soignés — devis gratuit sous 24h.',
   ogImage: 'https://demenageurs-en-pays-we.fr/og.png',
   twitterHandle: '@enpayswe',
   themeColor: '#ea580c',

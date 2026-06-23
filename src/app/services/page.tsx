@@ -8,23 +8,33 @@ import {
 } from '@/components/seo/json-ld'
 
 const description =
-  'Création de site, SEO, identité visuelle, développement sur mesure : découvrez nos services pour développer votre activité en ligne.'
+  "Déménagement à Besançon et en Franche-Comté : appartements, maisons, transferts de bureaux, vidage, transport. EN PAYS WÊ, déménageur de confiance, intervient 7j/7 dans le Doubs et le Grand Est."
 
 const services = [
-  { title: 'Création de site vitrine', desc: 'Un site moderne, rapide et responsive qui présente clairement votre activité et inspire confiance à vos visiteurs.' },
-  { title: 'Application web', desc: 'Outils métier, plateformes de réservation, espaces clients : des applications pensées pour simplifier votre quotidien.' },
-  { title: 'Référencement naturel (SEO)', desc: 'Optimisation technique, contenu stratégique et suivi de positionnement pour gagner en visibilité sur Google.' },
-  { title: 'Identité visuelle', desc: 'Logo, charte graphique, supports de communication : une image cohérente qui vous ressemble.' },
-  { title: 'Communication digitale', desc: 'Stratégie de contenu, réseaux sociaux et campagnes pour développer votre audience en ligne.' },
-  { title: 'Développement sur mesure', desc: 'Intégrations, automatisations, API : des solutions techniques taillées pour vos besoins spécifiques.' },
-  { title: 'Maintenance & sécurité', desc: 'Mises à jour, sauvegardes, monitoring et corrections pour un site toujours performant et sécurisé.' },
-  { title: 'Analyse & reporting', desc: 'Tableaux de bord clairs pour suivre vos performances, comprendre vos visiteurs et ajuster votre stratégie.' },
+  { title: "Déménagement d'appartements & maisons à Besançon", desc: 'Prise en charge complète : emballage, démontage, chargement, transport, remontage. Du studio au grand volume.' },
+  { title: 'Livraison de meubles & électroménager', desc: 'Livraison soignée à domicile, avec mise en place et installation si besoin. Courtes et longues distances.' },
+  { title: 'Transport de marchandises', desc: 'Transport professionnel de marchandises, matériel ou objets volumineux, avec camion adapté au volume à déplacer.' },
+  { title: 'Transfert de bureaux & locaux professionnels', desc: 'Organisation complète : mobilier, matériel informatique, archives. Planning optimisé pour limiter les interruptions.' },
+  { title: "Vidage d'appartements & maisons", desc: 'Débarras complet avec tri, enlèvement et mise en déchèterie. Pratique pour successions, ventes ou travaux.' },
+  { title: 'Vidage de caves & garages', desc: 'On débarrasse, charge et évacue en déchèterie tous les encombrants. Vous récupérez un espace propre et vide.' },
+  { title: 'Emballage & protection', desc: 'Cartons, scotch, papier bulle, housses : matériel adapté à vos objets fragiles. Emballage réalisé par nos équipes sur demande.' },
+  { title: 'Monte-meubles & gros volumes', desc: "Pour les étages difficiles d'accès ou les objets volumineux, nous mobilisons les équipements et équipes nécessaires." },
 ]
 
 export const metadata: Metadata = {
-  title: 'Services',
+  title: 'Services de déménagement à Besançon — Particuliers & Entreprises',
   description,
   alternates: { canonical: '/services' },
+  keywords: [
+    'déménagement Besançon',
+    'déménageur Besançon',
+    'entreprise de déménagement Besançon',
+    'société de déménagement Besançon',
+    'transfert de bureaux Besançon',
+    'vidage appartement Besançon',
+    'déménagement Doubs',
+    'déménagement Franche-Comté',
+  ],
 }
 
 const jsonLd = {
