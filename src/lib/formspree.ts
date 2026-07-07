@@ -1,4 +1,4 @@
-export const FORMSPREE_URL = 'https://formspree.io/f/xbdweqdl'
+export const FORMSPREE_URL = 'https://formspree.io/f/mvzjydjd'
 
 export async function submitToFormspree(formData: FormData): Promise<void> {
   const res = await fetch(FORMSPREE_URL, {
