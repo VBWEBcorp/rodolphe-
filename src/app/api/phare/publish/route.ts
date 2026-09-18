@@ -30,6 +30,8 @@ interface PharePayload {
   jsonLd?: string | Record<string, unknown>
   coverImageUrl?: string
   coverImageAlt?: string
+  // Date de publication voulue par PHARE (ISO) quand l'article est antidaté.
+  publishedAt?: string
 
   url?: string
   // Action `file` : dépôt d'un fichier de la racine du site (llms.txt).
@@ -274,6 +276,9 @@ export async function POST(req: Request) {
 
     const jsonLd = jsonLdToString(body.jsonLd)
     const now = new Date()
+    // La date affichée est celle que PHARE demande (article antidaté), sinon l'instant du dépôt.
+    const demandee = body.publishedAt ? new Date(body.publishedAt) : null
+    const publiee = demandee && !Number.isNaN(demandee.getTime()) ? demandee : null
 
     // 7. UPSERT par slug — jamais de doublon si PHARE renvoie le même article
     const res = await BlogPost.updateOne(
@@ -296,9 +301,10 @@ export async function POST(req: Request) {
           // Déposé EN LIGNE : il sort dans /blog et à son adresse, jamais en
           // brouillon (un brouillon renverrait 404).
           published: true,
+          ...(publiee ? { publishedAt: publiee } : {}),
         },
         $setOnInsert: {
-          publishedAt: now,
+          ...(publiee ? {} : { publishedAt: now }),
           category: 'Actualités',
         },
       },
