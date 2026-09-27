@@ -8,7 +8,7 @@ export function organizationJsonLd() {
     '@type': 'Organization',
     name: siteConfig.name,
     url: siteConfig.url,
-    logo: `${siteConfig.url}/favicon.svg`,
+    logo: `${siteConfig.url}/logo-enpayswe.png`,
     contactPoint: [
       {
         '@type': 'ContactPoint',
@@ -37,7 +37,7 @@ export function localBusinessJsonLd() {
     telephone: siteConfig.phone,
     email: siteConfig.email,
     image: siteConfig.ogImage,
-    logo: `${siteConfig.url}/favicon.svg`,
+    logo: `${siteConfig.url}/logo-enpayswe.png`,
     priceRange: siteConfig.priceRange,
     description: siteConfig.description,
     address: {

@@ -30,6 +30,7 @@ export const metadata: Metadata = {
     description: DESCRIPTION,
     url: PATH,
     type: 'website',
+    images: ['/og.png'],
   },
 }
 

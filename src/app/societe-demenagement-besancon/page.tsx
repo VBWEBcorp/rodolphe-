@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     'déménageur professionnel Besançon',
     'EN PAYS WÊ',
   ],
-  openGraph: { title: TITLE, description: DESCRIPTION, url: PATH, type: 'website' },
+  openGraph: { title: TITLE, description: DESCRIPTION, url: PATH, type: 'website', images: ['/og.png'] },
 }
 
 const faqs = [

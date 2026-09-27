@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     'devis déménagement Besançon',
     'déménageur pas cher Besançon',
   ],
-  openGraph: { title: TITLE, description: DESCRIPTION, url: PATH, type: 'website' },
+  openGraph: { title: TITLE, description: DESCRIPTION, url: PATH, type: 'website', images: ['/og.png'] },
 }
 
 const faqs = [
